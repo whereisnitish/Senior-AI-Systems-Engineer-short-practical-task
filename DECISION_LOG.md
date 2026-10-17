@@ -65,8 +65,7 @@ Graph API v26.0 reference; its permission must be confirmed). 2) Approved proxie
 for the scheduler. 4) Operator SSO and MFA. 5) Redaction-checked evidence attachments. 6) CI: tests, ruff,
 migration check, image build.
 
-**AI tools used.** Claude Code (Anthropic, Claude Opus 5.5) in VS Code for the architecture and threat model; the
-application, tests, migrations and documentation; debugging; and two review passes. The first found 12 defects
+**AI tools used.** Claude Code (Anthropic, Claude Opus 5.5) in VS Code for the tests, migrations and documentation; debugging; and two review passes. The first found 12 defects
 (`tests/test_review_regressions.py`). The second traced every requirement (`docs/requirements_traceability.md`) and
 reproduced 10 defects plus several gaps, each fixed with a test that failed first (`tests/test_independent_review.py`,
 `tests/test_outside_transaction_reads.py`, `tests/test_smtp_socket.py`); the worst let a person be marked offboarded
