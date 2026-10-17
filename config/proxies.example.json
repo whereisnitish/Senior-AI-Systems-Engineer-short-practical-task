@@ -1,0 +1,23 @@
+{
+  "_comment": "Copy to config/proxies.json (git-ignored) and replace with the company-approved proxies. Never put credentials here: credential_ref is a vault reference whose entry holds 'username' and 'password' fields.",
+  "proxies": [
+    {
+      "id": "approved-proxy-a",
+      "scheme": "http",
+      "host": "proxy-a.example.invalid",
+      "port": 3128,
+      "credential_ref": "vault://ops/proxies/approved-proxy-a",
+      "priority": 1,
+      "approved": true
+    },
+    {
+      "id": "approved-proxy-b",
+      "scheme": "http",
+      "host": "proxy-b.example.invalid",
+      "port": 3128,
+      "credential_ref": "vault://ops/proxies/approved-proxy-b",
+      "priority": 2,
+      "approved": true
+    }
+  ]
+}

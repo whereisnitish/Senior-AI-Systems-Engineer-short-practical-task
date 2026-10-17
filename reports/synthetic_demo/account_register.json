@@ -1,0 +1,362 @@
+{
+  "report_meta": {
+    "title": "Account register",
+    "generated_at": "2026-10-17T05:47:11.694733+00:00",
+    "generator": "Instagram Operations Manager",
+    "data_classification": "SYNTHETIC_DEMO_DATA",
+    "integrations": {
+      "vault": {
+        "backend": "dev_memory",
+        "production_grade": false
+      },
+      "meta": {
+        "mode": "disabled",
+        "configured": false
+      },
+      "notifications": {
+        "backend": "none",
+        "configured": false
+      }
+    },
+    "verification_labels": {
+      "integration_verified": "Read directly from the authoritative system (configured integration, or this application's own records where it is the system of record).",
+      "human_confirmed": "Attested by a named, authorised human with an evidence reference; not machine-verified.",
+      "unverified": "No adequate evidence either way. Missing evidence is not proof of failure."
+    },
+    "notes": [
+      "Contains explicitly synthetic records created by scripts/seed_demo.py. Synthetic results are NOT live-account verification.",
+      "Vault: development-only in-memory vault holding synthetic secrets - not the company vault.",
+      "Meta: integration not configured - business association is human-confirmed.",
+      "Notifications: no provider configured - reminders/escalations were queued and shown on the dashboard but NOT delivered."
+    ]
+  },
+  "accounts": [
+    {
+      "id": "acc_d24c3d54a0ef4488a8064ee13004b8e9",
+      "brand_name": "Lumen Lab Test Brand (SYNTHETIC)",
+      "is_synthetic": true,
+      "environment": "synthetic_demo",
+      "provisioning_status": "provisioned",
+      "provisioned_at": "2026-10-11T04:46:58+00:00",
+      "owner": {
+        "id": "per_04a066bff951469c9a7f690d0a0d79ba",
+        "name": "Sam Rivera (SYNTHETIC account owner)",
+        "status": "active"
+      },
+      "handles": {
+        "suggested": [
+          "lumenlabtestbrandsynthetic",
+          "lumen_lab_test_brand_synthetic",
+          "lumen.lab.test.brand.synthetic",
+          "lumenlabtestbrandsynthetic_hq",
+          "thelumenlabtestbrandsynthetic",
+          "lltbs_synthetic"
+        ],
+        "suggestion_note": "format-checked only; availability is checked by a human in the official Instagram interface",
+        "selected": "lumenlabtestbrand",
+        "status": "claimed_on_platform"
+      },
+      "company_contacts": {
+        "email_assignment_ref": "IT-REQ-4821",
+        "email_hint": "i***@testco.example",
+        "email_domain": "testco.example",
+        "phone_assignment_ref": "TEL-0042",
+        "phone_hint": "+**********23",
+        "phone_control": "company_controlled"
+      },
+      "recovery": {
+        "email_control": "company_controlled",
+        "email_verification": "human_confirmed",
+        "phone_control": "company_controlled",
+        "phone_verification": "human_confirmed",
+        "last_verified_at": "2026-10-10T16:46:58+00:00"
+      },
+      "two_factor": {
+        "status": "enabled",
+        "method": "sms",
+        "verification": "human_confirmed"
+      },
+      "backup_codes": {
+        "vault_ref": "devvault://instagram/lumen-lab/backup-codes",
+        "status": "present_in_vault",
+        "verification": "integration_verified"
+      },
+      "vault_refs": {
+        "password_vault_ref": "devvault://instagram/lumen-lab/password",
+        "password_ref_verification": "integration_verified",
+        "other": {}
+      },
+      "profile": {
+        "profile_name": "Lumen Lab Test Brand",
+        "bio": "SYNTHETIC test brand for an operations-workflow demo. Not a real business. Questions: see link.",
+        "bio_char_count": 95,
+        "bio_max_chars": 150,
+        "profile_link": "https://brand.testco.example/lumen-lab",
+        "category": "Product/service",
+        "profile_image_ref": "brandkit://lumen-lab/logo-v1.png"
+      },
+      "business_account_status": "converted",
+      "meta": {
+        "link_status": "linked",
+        "business_ref": "biz-synthetic-0001",
+        "verification": "human_confirmed"
+      },
+      "steps": [
+        {
+          "step": "handle_selected",
+          "state": "completed",
+          "verification": "human_confirmed",
+          "evidence_ref": "searched handle in official app; not taken [SYNTHETIC]",
+          "task_id": "tsk_edd063ff75fd403fa9ce35144271d092",
+          "completed_at": "2026-10-08T06:46:58+00:00"
+        },
+        {
+          "step": "company_email",
+          "state": "completed",
+          "verification": "human_confirmed",
+          "evidence_ref": "IT ticket IT-REQ-4821 fulfilled [SYNTHETIC]",
+          "task_id": "tsk_681d1a4533d94655b4e69653b91db4b5",
+          "completed_at": "2026-10-08T06:46:58+00:00"
+        },
+        {
+          "step": "company_phone",
+          "state": "completed",
+          "verification": "human_confirmed",
+          "evidence_ref": "telecom inventory TEL-0042 [SYNTHETIC]",
+          "task_id": "tsk_fc8c4326f3884781bbda0167efb82972",
+          "completed_at": "2026-10-08T06:46:58+00:00"
+        },
+        {
+          "step": "signup",
+          "state": "completed",
+          "verification": "human_confirmed",
+          "evidence_ref": "profile instagram.com/lumenlabtestbrand exists; Instagram welcome email in company alias inbox [SYNTHETIC]",
+          "task_id": "tsk_ba2bc9b6c6824f398ed712ca0fd54e45",
+          "completed_at": "2026-10-10T10:46:58+00:00"
+        },
+        {
+          "step": "platform_verification",
+          "state": "completed",
+          "verification": "human_confirmed",
+          "evidence_ref": "Accounts Center personal details checked on company device [SYNTHETIC]",
+          "task_id": "tsk_20788bc5c274432687e470132f7dd956",
+          "completed_at": "2026-10-10T16:46:58+00:00"
+        },
+        {
+          "step": "two_factor",
+          "state": "completed",
+          "verification": "human_confirmed",
+          "evidence_ref": "2FA enabled in Accounts Center; codes saved straight to vault [SYNTHETIC]",
+          "task_id": "tsk_1df04eb424d44cf387e296c3c588f498",
+          "completed_at": "2026-10-10T18:46:58+00:00"
+        },
+        {
+          "step": "profile",
+          "state": "completed",
+          "verification": "human_confirmed",
+          "evidence_ref": "live profile compared with approved spec [SYNTHETIC]",
+          "task_id": "tsk_fcc6358bf1074e2bb0f366760ac2f240",
+          "completed_at": "2026-10-11T02:46:58+00:00"
+        },
+        {
+          "step": "business_conversion",
+          "state": "completed",
+          "verification": "human_confirmed",
+          "evidence_ref": "account type shows Business [SYNTHETIC]",
+          "task_id": "tsk_65b412b725f4473ca0931b749cd90b57",
+          "completed_at": "2026-10-11T02:46:58+00:00"
+        },
+        {
+          "step": "meta_link",
+          "state": "completed",
+          "verification": "human_confirmed",
+          "evidence_ref": "account listed under Business settings > Instagram accounts [SYNTHETIC]",
+          "task_id": "tsk_b64fe46d3a354cbc89b35efb41122d05",
+          "completed_at": "2026-10-11T04:46:58+00:00"
+        },
+        {
+          "step": "roles_assigned",
+          "state": "completed",
+          "verification": "human_confirmed",
+          "evidence_ref": "people list matches approved register [SYNTHETIC]",
+          "task_id": "tsk_ccedefd2c56f4886888ab63de2fd14b4",
+          "completed_at": "2026-10-11T04:46:58+00:00"
+        }
+      ],
+      "people_and_roles": [
+        {
+          "assignment_id": "asg_b4a356a1d3224fcfbe873721553b9e2c",
+          "person": {
+            "id": "per_04a066bff951469c9a7f690d0a0d79ba",
+            "name": "Sam Rivera (SYNTHETIC account owner)",
+            "status": "active"
+          },
+          "platform": "meta_business",
+          "role": "business_admin",
+          "role_description": "Full control of the test business portfolio and the Instagram account. Limit to the account owner and one backup admin.",
+          "approved": true,
+          "status": "active",
+          "temporary_test_role": false,
+          "verification": "human_confirmed",
+          "evidence_ref": "people list matches approved register [SYNTHETIC]",
+          "last_verified_at": "2026-10-11T04:46:58+00:00"
+        },
+        {
+          "assignment_id": "asg_e363f08e4a91454885f7daf38f288363",
+          "person": {
+            "id": "per_93e9fdd2e4584489a4744cca54628554",
+            "name": "Morgan Lee (SYNTHETIC security lead)",
+            "status": "active"
+          },
+          "platform": "meta_business",
+          "role": "business_admin",
+          "role_description": "Full control of the test business portfolio and the Instagram account. Limit to the account owner and one backup admin.",
+          "approved": true,
+          "status": "active",
+          "temporary_test_role": false,
+          "verification": "human_confirmed",
+          "evidence_ref": "people list matches approved register [SYNTHETIC]",
+          "last_verified_at": "2026-10-11T04:46:58+00:00"
+        },
+        {
+          "assignment_id": "asg_d47e6c060bd24b15b8ffca1204dae92f",
+          "person": {
+            "id": "per_e10a58dfddd04873bbae5b4a6f29caef",
+            "name": "Riley Kim (SYNTHETIC content publisher)",
+            "status": "active"
+          },
+          "platform": "meta_business",
+          "role": "content_publisher",
+          "role_description": "Partial access: create and publish content only. No people, settings or billing.",
+          "approved": true,
+          "status": "active",
+          "temporary_test_role": false,
+          "verification": "human_confirmed",
+          "evidence_ref": "people list matches approved register [SYNTHETIC]",
+          "last_verified_at": "2026-10-11T04:46:58+00:00"
+        },
+        {
+          "assignment_id": "asg_39ec14a3b2ad4dd3b6a8375116030be2",
+          "person": {
+            "id": "per_c38fc433e2224e87b30e12901b848251",
+            "name": "Jordan Patel (SYNTHETIC departing tester)",
+            "status": "departing"
+          },
+          "platform": "meta_business",
+          "role": "temporary_test_role",
+          "role_description": "Designated temporary test role: partial access (view insights only), time-boxed, used for the offboarding live test.",
+          "approved": true,
+          "status": "removed",
+          "temporary_test_role": true,
+          "verification": "human_confirmed",
+          "evidence_ref": "People list no longer shows the departing tester [SYNTHETIC]",
+          "last_verified_at": "2026-10-11T04:46:58+00:00"
+        }
+      ],
+      "blocker": null,
+      "provisioning_gaps": [],
+      "open_tasks": [
+        {
+          "id": "tsk_0f33e12514884b0e9674192144d5cf3f",
+          "task_type": "enable_two_factor",
+          "origin": "audit",
+          "account_id": "acc_d24c3d54a0ef4488a8064ee13004b8e9",
+          "title": "Enable two-factor authentication on @lumenlabtestbrand and vault the backup codes",
+          "owner": {
+            "id": "per_04a066bff951469c9a7f690d0a0d79ba",
+            "name": "Sam Rivera (SYNTHETIC account owner)",
+            "status": "active"
+          },
+          "supervisor": {
+            "id": "per_93e9fdd2e4584489a4744cca54628554",
+            "name": "Morgan Lee (SYNTHETIC security lead)",
+            "status": "active"
+          },
+          "status": "pending",
+          "priority": "low",
+          "due_at": "2026-10-24T18:46:58+00:00",
+          "is_overdue": false,
+          "created_at": "2026-10-10T18:46:58+00:00",
+          "updated_at": "2026-10-17T05:46:58+00:00",
+          "attempt_count": 1,
+          "reminder_count": 1,
+          "last_reminder_at": "2026-10-17T05:46:58+00:00",
+          "escalation_count": 0,
+          "escalated_at": null,
+          "completed_at": null,
+          "completed_by_id": null,
+          "completion_evidence_ref": null,
+          "verification_source": "unverified",
+          "blocker_detail": null,
+          "error_detail": null,
+          "idempotency_key": "remediation:fnd_90716fa5591c44aeaa80de46b99c914f:g1"
+        }
+      ],
+      "open_findings": [
+        {
+          "id": "fnd_90716fa5591c44aeaa80de46b99c914f",
+          "account_id": "acc_d24c3d54a0ef4488a8064ee13004b8e9",
+          "check_name": "two_factor_enabled",
+          "fingerprint": "two_factor_enabled",
+          "severity": "low",
+          "description": "Two-factor authentication uses SMS (SIM-swap risk); prefer an authenticator app or security key",
+          "verification": "human_confirmed",
+          "evidence_ref": "2FA enabled in Accounts Center; codes saved straight to vault [SYNTHETIC]",
+          "status": "open",
+          "first_detected_at": "2026-10-10T17:46:58+00:00",
+          "last_detected_at": "2026-10-16T10:46:58+00:00",
+          "occurrence_count": 5,
+          "resolved_at": null,
+          "resolution_note": null,
+          "remediation_task": {
+            "id": "tsk_0f33e12514884b0e9674192144d5cf3f",
+            "title": "Enable two-factor authentication on @lumenlabtestbrand and vault the backup codes",
+            "status": "pending",
+            "owner": {
+              "id": "per_04a066bff951469c9a7f690d0a0d79ba",
+              "name": "Sam Rivera (SYNTHETIC account owner)",
+              "status": "active"
+            },
+            "due_at": "2026-10-24T18:46:58+00:00",
+            "origin": "audit"
+          },
+          "remediation_blocker": null
+        },
+        {
+          "id": "fnd_4cefc2e39b95461bb034e27b999de63e",
+          "account_id": "acc_d24c3d54a0ef4488a8064ee13004b8e9",
+          "check_name": "outstanding_security_offboarding_actions",
+          "fingerprint": "outstanding_security_offboarding_actions:offboarding",
+          "severity": "high",
+          "description": "4 offboarding action(s) outstanding (1 blocked)",
+          "verification": "integration_verified",
+          "evidence_ref": "system-of-record:offboarding_actions",
+          "status": "open",
+          "first_detected_at": "2026-10-16T10:46:58+00:00",
+          "last_detected_at": "2026-10-16T10:46:58+00:00",
+          "occurrence_count": 1,
+          "resolved_at": null,
+          "resolution_note": null,
+          "remediation_task": {
+            "id": "tsk_efb66ae0fd684c98b010e8fbbb62d720",
+            "title": "Offboarding: remove Jordan Patel (SYNTHETIC departing tester)'s vault access to devvault://proxies/approved-proxy-a",
+            "status": "pending",
+            "owner": {
+              "id": "per_93e9fdd2e4584489a4744cca54628554",
+              "name": "Morgan Lee (SYNTHETIC security lead)",
+              "status": "active"
+            },
+            "due_at": "2026-10-17T07:46:58+00:00",
+            "origin": "offboarding"
+          },
+          "remediation_blocker": null
+        }
+      ],
+      "last_verified_at": "2026-10-16T06:46:58+00:00",
+      "verification_source": "integration_verified",
+      "evidence_ref": "new backup-code set generated and stored in vault [SYNTHETIC]",
+      "created_at": "2026-10-08T05:46:58+00:00",
+      "updated_at": "2026-10-17T05:46:59.745418+00:00"
+    }
+  ]
+}

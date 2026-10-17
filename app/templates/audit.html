@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% from "_macros.html" import pill, vlabel, sev, run_button, due %}
+{% block title %}Security audit{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Security audit</h1><div class="sub">Runs weekly and on demand. Missing evidence is reported as <em>unverified</em>, never as a failure.</div></div>
+  <div class="actions">{{ run_button(csrf, 'audit', 'Run security audit', '/dashboard/audit') }}</div>
+</div>
+
+<div class="grid two">
+  <section class="card">
+    <h2>Latest run</h2>
+    {% if latest %}
+    <dl class="kv">
+      <dt>Run</dt><dd class="mono">{{ latest.id }}</dd>
+      <dt>Status</dt><dd>{{ pill(latest.status) }} <span class="muted">{{ latest.trigger }}{% if latest.key %} · {{ latest.key }}{% endif %}</span></dd>
+      <dt>Started</dt><dd>{{ latest.started_at|dt }} <span class="muted">({{ latest.started_at|rel(now_dt) }})</span></dd>
+      <dt>Findings</dt><dd>{{ latest.totals.findings_new or 0 }} new · {{ latest.totals.findings_reused or 0 }} re-detected (deduplicated) · {{ latest.totals.findings_resolved or 0 }} resolved</dd>
+    </dl>
+    {% else %}<p class="empty">No audit has run yet.</p>{% endif %}
+  </section>
+  <section class="card">
+    <h2>Verification labels</h2>
+    <div class="status-list">
+      {% for key, text in legend.items() %}<div class="status-row"><span>{{ vlabel(key) }}</span><span class="small muted">{{ text }}</span></div>{% endfor %}
+    </div>
+  </section>
+</div>
+
+<section class="card">
+  <div class="card-head"><h2>Open findings</h2><span class="muted small">{{ findings|length }} open</span></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Severity</th><th>Check</th><th>Finding</th><th>Verification</th><th>Remediation</th><th class="num">Seen</th></tr></thead>
+    <tbody>
+    {% for f in findings %}
+      <tr>
+        <td>{{ sev(f.severity) }}</td>
+        <td class="row-title">{{ f.check_name|human }}</td>
+        <td>{{ f.description }}{% if f.evidence_ref %}<div class="row-sub">evidence: {{ f.evidence_ref }}</div>{% endif %}</td>
+        <td>{{ vlabel(f.verification) }}</td>
+        <td>{% if f.remediation_task %}<a href="/dashboard/tasks/{{ f.remediation_task.id }}">{{ f.remediation_task.title }}</a>
+            <div class="row-sub">{{ pill(f.remediation_task.status) }} {{ f.remediation_task.owner.name if f.remediation_task.owner else '-' }} · due {{ due(f.remediation_task.due_at, now_dt, false) }}</div>
+          {% else %}<span class="muted small">{{ f.remediation_blocker or 'no task needed' }}</span>{% endif %}</td>
+        <td class="num">{{ f.occurrence_count }}x</td>
+      </tr>
+    {% else %}<tr><td colspan="6" class="empty">No open findings.</td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+</section>
+
+{% if latest %}
+{% for acc in latest.checks %}
+<section class="card">
+  <div class="card-head"><h2>Check results: {{ acc.brand_name }}{% if acc.handle %} <span class="handle">@{{ acc.handle }}</span>{% endif %}</h2>{% if acc.is_synthetic %}<span class="tag synthetic">synthetic</span>{% endif %}</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Check</th><th>Outcome</th><th>Verification</th><th>Detail</th></tr></thead>
+    <tbody>
+    {% for c in acc.checks %}
+      <tr><td class="row-title">{{ c.check_name|human }}</td>
+        <td>{% if c.outcome == 'finding' %}{{ sev(c.severity) }}{% else %}{{ pill(c.outcome) }}{% endif %}</td>
+        <td>{% if c.outcome != 'not_applicable' %}{{ vlabel(c.verification) }}{% else %}<span class="muted">-</span>{% endif %}</td>
+        <td>{{ c.description }}{% if c.evidence_ref %}<div class="row-sub">{{ c.evidence_ref }}</div>{% endif %}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</section>
+{% endfor %}
+{% endif %}
+
+<div class="grid two">
+  <section class="card">
+    <h2>Recently resolved</h2>
+    <ul class="attention">
+      {% for f in resolved %}<li><span class="pill ok">resolved</span><div><span class="what">{{ f.check_name|human }}</span><div class="why">{{ f.resolution_note }} · {{ f.resolved_at|rel(now_dt) }}</div></div></li>
+      {% else %}<li class="muted">Nothing resolved yet.</li>{% endfor %}
+    </ul>
+  </section>
+  <section class="card">
+    <h2>Run history</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>When</th><th>Trigger</th><th>Status</th><th class="num">New</th><th class="num">Re-detected</th><th class="num">Resolved</th></tr></thead>
+      <tbody>
+      {% for r in runs %}<tr><td class="nowrap">{{ r.started_at|rel(now_dt) }}</td><td>{{ r.trigger }}{% if r.key %}<div class="row-sub">{{ r.key }}</div>{% endif %}</td><td>{{ pill(r.status) }}</td>
+        <td class="num">{{ r.totals.findings_new or 0 }}</td><td class="num">{{ r.totals.findings_reused or 0 }}</td><td class="num">{{ r.totals.findings_resolved or 0 }}</td></tr>
+      {% else %}<tr><td colspan="6" class="empty">No runs yet.</td></tr>{% endfor %}
+      </tbody>
+    </table></div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{
+  "vault": {
+    "backend": "hashicorp_kv2",
+    "address": "http://127.0.0.1:8200",
+    "mount": "secret"
+  },
+  "checks": [
+    {
+      "check": "vault reachable and unsealed",
+      "ok": true,
+      "detail": "sys/health: ok"
+    },
+    {
+      "check": "metadata readable: Instagram password",
+      "ok": true,
+      "detail": "entry exists, version 1"
+    },
+    {
+      "check": "metadata readable: Instagram backup codes",
+      "ok": true,
+      "detail": "metadata answered: no entry stored yet"
+    },
+    {
+      "check": "value denied: Instagram password",
+      "ok": true,
+      "detail": "Vault answered 403, as the policy intends"
+    },
+    {
+      "check": "runtime secret: [REDACTED] password",
+      "ok": true,
+      "detail": "readable at vault://smtp/gmail#password"
+    },
+    {
+      "check": "runtime secret: [REDACTED] token",
+      "ok": null,
+      "detail": "not configured"
+    }
+  ],
+  "ok": true,
+  "report_meta": {
+    "title": "Vault check",
+    "generated_at": "2026-10-17T09:26:34.595032+00:00",
+    "generator": "Instagram Operations Manager",
+    "data_classification": "CANDIDATE_PROVIDED_TEST_ENVIRONMENT",
+    "integrations": {
+      "vault": {
+        "backend": "hashicorp_kv2",
+        "production_grade": true
+      },
+      "meta": {
+        "mode": "disabled",
+        "configured": false
+      },
+      "notifications": {
+        "backend": "none",
+        "configured": false
+      }
+    },
+    "verification_labels": {
+      "integration_verified": "Read directly from the authoritative system (configured integration, or this application's own records where it is the system of record).",
+      "human_confirmed": "Attested by a named, authorised human with an evidence reference; not machine-verified.",
+      "unverified": "No adequate evidence either way. Missing evidence is not proof of failure."
+    },
+    "notes": [
+      "The company test environment was not provided. The candidate created throwaway substitute resources (test brand, email, Instagram account, Meta business portfolio); they are not company-authorised resources.",
+      "Vault: a candidate-run HashiCorp Vault (not the company vault), KV v2. Presence and versions of vault:// references are machine-verified; the application token may not read Instagram secret values. References to other password managers stay human-confirmed.",
+      "Meta: integration not configured - business association is human-confirmed.",
+      "Notifications: no provider configured - reminders/escalations were queued and shown on the dashboard but NOT delivered."
+    ]
+  }
+}

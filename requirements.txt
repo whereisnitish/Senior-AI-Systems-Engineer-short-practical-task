@@ -1,0 +1,13 @@
+# Runtime dependencies (pinned; verified with Python 3.11 on Windows 10).
+fastapi==0.115.12
+starlette==0.46.2
+uvicorn==0.34.2
+pydantic==2.11.4
+pydantic-settings==2.9.1
+SQLAlchemy==2.0.40
+alembic==1.15.2
+APScheduler==3.11.0
+httpx==0.28.1
+Jinja2==3.1.6
+python-multipart==0.0.20
+tzdata==2025.2

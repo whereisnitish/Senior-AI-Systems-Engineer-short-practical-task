@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% from "_macros.html" import pill, vlabel %}
+{% block title %}Accounts{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Account register</h1><div class="sub">Every fact shows how it was verified. References only: no secrets are stored here.</div></div>
+</div>
+<section class="card">
+  <div class="table-wrap"><table>
+    <thead><tr><th>Brand</th><th>Status</th><th>Progress</th><th>Owner</th><th>Recovery</th><th>2FA</th><th>Backup codes</th><th>Meta</th><th>Blocker</th><th>Last verified</th></tr></thead>
+    <tbody>
+    {% for a in accounts %}
+      {% set done = a.steps|selectattr('state', 'equalto', 'completed')|list|length %}
+      <tr>
+        <td><a class="row-title" href="/dashboard/accounts/{{ a.id }}">{{ a.brand_name }}</a>{% if a.is_synthetic %} <span class="tag synthetic">synthetic</span>{% endif %}
+          <div class="row-sub">{{ ('@' ~ a.handles.selected) if a.handles.selected else 'handle not selected' }}</div></td>
+        <td>{{ pill(a.provisioning_status) }}</td>
+        <td class="nowrap">{{ done }}/{{ a.steps|length }}</td>
+        <td>{{ a.owner.name if a.owner else '-' }}</td>
+        <td>{{ a.recovery.email_control|human }} {{ vlabel(a.recovery.email_verification) }}</td>
+        <td>{{ a.two_factor.method|human }} {{ vlabel(a.two_factor.verification) }}</td>
+        <td>{{ a.backup_codes.status|human }} {{ vlabel(a.backup_codes.verification) }}</td>
+        <td>{{ a.meta.link_status|human }} {{ vlabel(a.meta.verification) }}</td>
+        <td>{{ a.blocker.code if a.blocker else '-' }}</td>
+        <td class="nowrap">{{ a.last_verified_at|rel(now_dt) }}</td>
+      </tr>
+    {% else %}<tr><td colspan="10" class="empty">No accounts yet.</td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+</section>
+{% endblock %}

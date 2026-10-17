@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from "_macros.html" import pill, run_button %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Notifications</h1><div class="sub">Assignment, reminder and escalation messages. Each one is queued exactly once (dedupe keys).</div></div>
+  <div class="actions">{{ run_button(csrf, 'reminders', 'Run reminders & escalation', '/dashboard/notifications') }}</div>
+</div>
+{% if not notifier_configured %}<div class="banner warn"><strong>No notification provider configured.</strong> Messages are marked "not delivered" and listed here; nothing is claimed as sent.</div>{% endif %}
+<section class="card">
+  <div class="table-wrap"><table>
+    <thead><tr><th>When</th><th>Kind</th><th>To</th><th>Subject</th><th>Delivery</th><th class="num">Attempts</th></tr></thead>
+    <tbody>
+    {% for n in notifications %}
+      <tr><td class="nowrap">{{ n.created_at|rel(now_dt) }}<div class="row-sub">{{ n.created_at|dt }}</div></td><td>{{ pill(n.kind) }}</td>
+        <td>{{ n.recipient.name if n.recipient else '-' }}</td><td>{{ n.subject }}{% if n.task_id %}<div class="row-sub"><a href="/dashboard/tasks/{{ n.task_id }}">open task</a></div>{% endif %}</td>
+        <td>{{ pill(n.delivery_status) }}{% if n.last_error and n.delivery_status != 'not_delivered_no_provider' %}<div class="row-sub">{{ n.last_error }}</div>{% endif %}</td>
+        <td class="num">{{ n.attempt_count }}</td></tr>
+    {% else %}<tr><td colspan="6" class="empty">No notifications yet.</td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+</section>
+{% endblock %}

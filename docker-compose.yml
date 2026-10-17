@@ -1,0 +1,19 @@
+services:
+  ops:
+    build: .
+    env_file: .env
+    environment:
+      HOST: 0.0.0.0
+      DATABASE_URL: sqlite:////app/data/instagram_ops.db
+    ports:
+      - "127.0.0.1:8000:8000"   # bind to localhost only; put a TLS reverse proxy in front for anything else
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./reports:/app/reports
+      # - ./secrets/vault_token:/run/secrets/vault_token:ro   # only if VAULT_BACKEND=hashicorp_kv2
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    restart: unless-stopped

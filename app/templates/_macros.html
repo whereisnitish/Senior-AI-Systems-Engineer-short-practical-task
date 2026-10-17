@@ -1,0 +1,27 @@
+{% macro pill(status) -%}
+<span class="pill {{ tone(status) }}">{{ (status or '-')|human }}</span>
+{%- endmacro %}
+
+{% macro vlabel(value) -%}
+<span class="label l-{{ value }}" title="{{ LABEL_HELP.get(value, '') }}">{{ (value or '-')|human }}</span>
+{%- endmacro %}
+
+{% macro sev(value) -%}
+<span class="sev sev-{{ value }}">{{ value }}</span>
+{%- endmacro %}
+
+{% macro csrf_field(csrf) -%}
+<input type="hidden" name="csrf_token" value="{{ csrf }}">
+{%- endmacro %}
+
+{% macro run_button(csrf, job, label, next, style='') -%}
+<form method="post" action="/dashboard/run/{{ job }}" class="inline">
+  <input type="hidden" name="csrf_token" value="{{ csrf }}">
+  <input type="hidden" name="next" value="{{ next }}">
+  <button type="submit" class="{{ style }}">{{ label }}</button>
+</form>
+{%- endmacro %}
+
+{% macro due(value, now_dt, overdue) -%}
+<span class="nowrap {{ 'overdue-text' if overdue else '' }}" title="{{ value|dt }}">{{ value|rel(now_dt) }}</span>
+{%- endmacro %}

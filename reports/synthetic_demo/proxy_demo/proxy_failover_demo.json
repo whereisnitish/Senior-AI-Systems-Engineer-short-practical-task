@@ -1,0 +1,567 @@
+{
+  "report_meta": {
+    "title": "Proxy health and controlled failover demonstration",
+    "generated_at": "2026-10-17T05:47:08.021958+00:00",
+    "data_classification": "SIMULATED_LOCAL_NETWORK",
+    "notes": [
+      "Proxies and the neutral endpoint are local stand-ins on 127.0.0.1 (app/simulation/local_network.py).",
+      "No company-approved proxy was available; this is not a test of real proxies.",
+      "Credentials were synthetic, generated for this run, resolved from the dev-only vault and never logged."
+    ],
+    "correlation_id": "proxy-demo-de6a8a18460a4b69",
+    "credential_leak_check": "[REDACTED]"
+  },
+  "scenes": [
+    {
+      "scene": "1. Health check all approved proxies",
+      "expectation": "a and b healthy; c rejects its credential (407) -> quarantined + maintenance task, no retry",
+      "result": {
+        "url": "http://127.0.0.1:65156/health",
+        "diagnosis": "endpoint_reachable",
+        "results": [
+          {
+            "proxy_id": "local-sim-a",
+            "url": "http://127.0.0.1:65156/health",
+            "ok": true,
+            "failure_kind": "none",
+            "classification": "ok",
+            "attempt_count": 1,
+            "attempts": [
+              {
+                "attempt": 1,
+                "kind": "none",
+                "status_code": 200,
+                "latency_ms": 785.7,
+                "error": null,
+                "backoff_seconds": null
+              }
+            ],
+            "attribution": "ok",
+            "health_after": "healthy"
+          },
+          {
+            "proxy_id": "local-sim-b",
+            "url": "http://127.0.0.1:65156/health",
+            "ok": true,
+            "failure_kind": "none",
+            "classification": "ok",
+            "attempt_count": 1,
+            "attempts": [
+              {
+                "attempt": 1,
+                "kind": "none",
+                "status_code": 200,
+                "latency_ms": 15.5,
+                "error": null,
+                "backoff_seconds": null
+              }
+            ],
+            "attribution": "ok",
+            "health_after": "healthy"
+          },
+          {
+            "proxy_id": "local-sim-c",
+            "url": "http://127.0.0.1:65156/health",
+            "ok": false,
+            "failure_kind": "proxy_auth_failed",
+            "classification": "proxy_failure",
+            "attempt_count": 1,
+            "attempts": [
+              {
+                "attempt": 1,
+                "kind": "proxy_auth_failed",
+                "status_code": 407,
+                "latency_ms": 3.2,
+                "error": null,
+                "backoff_seconds": null
+              }
+            ],
+            "attribution": "proxy",
+            "health_after": "quarantined"
+          }
+        ]
+      }
+    },
+    {
+      "scene": "2. Acquire session (affinity)",
+      "expectation": "bound to the highest-priority healthy proxy (a)",
+      "result": {
+        "outcome": "bound",
+        "proxy_id": "local-sim-a",
+        "session_id": "pxs_5824e6aba0ac43beb5b8b3ce4e95172c"
+      }
+    },
+    {
+      "scene": "3. Request via session",
+      "expectation": "proxy a healthy -> connection preserved",
+      "result": {
+        "session_id": "pxs_5824e6aba0ac43beb5b8b3ce4e95172c",
+        "proxy_id": "local-sim-a",
+        "outcome": "ok",
+        "decision": "Proxy healthy: connection preserved (session affinity).",
+        "probe": {
+          "proxy_id": "local-sim-a",
+          "url": "http://127.0.0.1:65156/health",
+          "ok": true,
+          "failure_kind": "none",
+          "classification": "ok",
+          "attempt_count": 1,
+          "attempts": [
+            {
+              "attempt": 1,
+              "kind": "none",
+              "status_code": 200,
+              "latency_ms": 23.3,
+              "error": null,
+              "backoff_seconds": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scene": "4. Proxy a goes down",
+      "expectation": "3 bounded attempts with backoff, then controlled failover to b after b passes a health check",
+      "result": {
+        "session_id": "pxs_5824e6aba0ac43beb5b8b3ce4e95172c",
+        "proxy_id": "local-sim-b",
+        "outcome": "failover",
+        "decision": "Controlled failover local-sim-a -> local-sim-b: proxy_connect_timeout after 3 attempt(s). Candidate health-checked before the session moved.",
+        "probe": {
+          "proxy_id": "local-sim-a",
+          "url": "http://127.0.0.1:65156/health",
+          "ok": false,
+          "failure_kind": "proxy_connect_timeout",
+          "classification": "proxy_failure",
+          "attempt_count": 3,
+          "attempts": [
+            {
+              "attempt": 1,
+              "kind": "proxy_connect_timeout",
+              "status_code": null,
+              "latency_ms": 1015.0,
+              "error": "ConnectTimeout: timed out",
+              "backoff_seconds": 0.188
+            },
+            {
+              "attempt": 2,
+              "kind": "proxy_connect_timeout",
+              "status_code": null,
+              "latency_ms": 1003.8,
+              "error": "ConnectTimeout: timed out",
+              "backoff_seconds": 0.218
+            },
+            {
+              "attempt": 3,
+              "kind": "proxy_connect_timeout",
+              "status_code": null,
+              "latency_ms": 1005.3,
+              "error": "ConnectTimeout: timed out",
+              "backoff_seconds": null
+            }
+          ]
+        },
+        "candidates_checked": [
+          {
+            "proxy_id": "local-sim-b",
+            "url": "http://127.0.0.1:65156/health",
+            "ok": true,
+            "failure_kind": "none",
+            "classification": "ok",
+            "attempt_count": 1,
+            "attempts": [
+              {
+                "attempt": 1,
+                "kind": "none",
+                "status_code": 200,
+                "latency_ms": 4.9,
+                "error": null,
+                "backoff_seconds": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "scene": "5a. Proxy a recovers",
+      "expectation": "a passes a fresh health check",
+      "result": {
+        "proxy_id": "local-sim-a",
+        "url": "http://127.0.0.1:65156/health",
+        "ok": true,
+        "failure_kind": "none",
+        "classification": "ok",
+        "attempt_count": 1,
+        "attempts": [
+          {
+            "attempt": 1,
+            "kind": "none",
+            "status_code": 200,
+            "latency_ms": 13.0,
+            "error": null,
+            "backoff_seconds": null
+          }
+        ],
+        "attribution": "ok",
+        "health_after": "healthy"
+      }
+    },
+    {
+      "scene": "5b. Request via session again",
+      "expectation": "session stays on b - no flapping back once a recovers",
+      "result": {
+        "session_id": "pxs_5824e6aba0ac43beb5b8b3ce4e95172c",
+        "proxy_id": "local-sim-b",
+        "outcome": "ok",
+        "decision": "Proxy healthy: connection preserved (session affinity).",
+        "probe": {
+          "proxy_id": "local-sim-b",
+          "url": "http://127.0.0.1:65156/health",
+          "ok": true,
+          "failure_kind": "none",
+          "classification": "ok",
+          "attempt_count": 1,
+          "attempts": [
+            {
+              "attempt": 1,
+              "kind": "none",
+              "status_code": 200,
+              "latency_ms": 4.6,
+              "error": null,
+              "backoff_seconds": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scene": "6. Endpoint returns 503",
+      "expectation": "endpoint failure, not proxy failure -> proxy preserved, no failover",
+      "result": {
+        "session_id": "pxs_5824e6aba0ac43beb5b8b3ce4e95172c",
+        "proxy_id": "local-sim-b",
+        "outcome": "endpoint_failure",
+        "decision": "The endpoint is failing (the proxy relayed an error). Proxy preserved: failover would not help.",
+        "probe": {
+          "proxy_id": "local-sim-b",
+          "url": "http://127.0.0.1:65156/health",
+          "ok": false,
+          "failure_kind": "endpoint_error",
+          "classification": "endpoint_failure",
+          "attempt_count": 3,
+          "attempts": [
+            {
+              "attempt": 1,
+              "kind": "endpoint_error",
+              "status_code": 503,
+              "latency_ms": 4.8,
+              "error": null,
+              "backoff_seconds": 0.148
+            },
+            {
+              "attempt": 2,
+              "kind": "endpoint_error",
+              "status_code": 503,
+              "latency_ms": 4.8,
+              "error": null,
+              "backoff_seconds": 0.278
+            },
+            {
+              "attempt": 3,
+              "kind": "endpoint_error",
+              "status_code": 503,
+              "latency_ms": 4.8,
+              "error": null,
+              "backoff_seconds": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scene": "7. Endpoint rate-limits (429)",
+      "expectation": "back off on the SAME proxy; rotating to escape a rate limit is refused",
+      "result": {
+        "session_id": "pxs_5824e6aba0ac43beb5b8b3ce4e95172c",
+        "proxy_id": "local-sim-b",
+        "outcome": "rate_limited",
+        "decision": "Rate limited: backing off on the SAME proxy. Rotating proxies to escape a rate limit is not allowed.",
+        "probe": {
+          "proxy_id": "local-sim-b",
+          "url": "http://127.0.0.1:65156/health",
+          "ok": false,
+          "failure_kind": "rate_limited",
+          "classification": "rate_limited",
+          "attempt_count": 1,
+          "attempts": [
+            {
+              "attempt": 1,
+              "kind": "rate_limited",
+              "status_code": 429,
+              "latency_ms": 4.7,
+              "error": null,
+              "backoff_seconds": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scene": "7b. Attempt rotation during back-off",
+      "expectation": "refused",
+      "result": {
+        "outcome": "rotation_refused",
+        "decision": "session is in rate-limit back-off; rotating now would be evasion, so it is refused"
+      }
+    },
+    {
+      "scene": "8. Endpoint presents a security challenge",
+      "expectation": "session PAUSED + human review task; no retry, no rotation",
+      "result": {
+        "session_id": "pxs_4bb73f3c82224315b113f7f2b06fdeb7",
+        "proxy_id": "local-sim-a",
+        "outcome": "paused_security_review",
+        "decision": "Security challenge: session PAUSED for human review. No retry and no proxy rotation - rotating to get past a challenge would be evasion.",
+        "probe": {
+          "proxy_id": "local-sim-a",
+          "url": "http://127.0.0.1:65156/health",
+          "ok": false,
+          "failure_kind": "security_challenge",
+          "classification": "security_challenge",
+          "attempt_count": 1,
+          "attempts": [
+            {
+              "attempt": 1,
+              "kind": "security_challenge",
+              "status_code": 403,
+              "latency_ms": 5.0,
+              "error": null,
+              "backoff_seconds": null
+            }
+          ]
+        },
+        "review_task_id": "tsk_5cb64e716336411b85afbecff31eaf95"
+      }
+    },
+    {
+      "scene": "8b. Further traffic while paused",
+      "expectation": "refused until a human reviews",
+      "result": {
+        "outcome": "request_refused_while_paused",
+        "decision": "Session is paused pending human review (security challenge returned by the test endpoint); no traffic is sent until reviewed"
+      }
+    }
+  ],
+  "redacted_transition_log": [
+    {
+      "ts": "2026-10-17T05:47:03.437+00:00",
+      "event": "proxy.probe",
+      "outcome": "ok",
+      "proxy_id": "local-sim-a",
+      "from_proxy": null,
+      "to_proxy": null,
+      "reason": null,
+      "retry_count": 0,
+      "decision": null
+    },
+    {
+      "ts": "2026-10-17T05:47:03.455+00:00",
+      "event": "proxy.probe",
+      "outcome": "ok",
+      "proxy_id": "local-sim-b",
+      "from_proxy": null,
+      "to_proxy": null,
+      "reason": null,
+      "retry_count": 0,
+      "decision": null
+    },
+    {
+      "ts": "2026-10-17T05:47:03.460+00:00",
+      "event": "proxy.probe",
+      "outcome": "proxy_failure",
+      "proxy_id": "local-sim-c",
+      "from_proxy": null,
+      "to_proxy": null,
+      "reason": null,
+      "retry_count": 0,
+      "decision": null
+    },
+    {
+      "ts": "2026-10-17T05:47:03.536+00:00",
+      "event": "proxy.probe",
+      "outcome": "ok",
+      "proxy_id": "local-sim-a",
+      "from_proxy": null,
+      "to_proxy": null,
+      "reason": null,
+      "retry_count": 0,
+      "decision": null
+    },
+    {
+      "ts": "2026-10-17T05:47:03.538+00:00",
+      "event": "proxy.session_decision",
+      "outcome": "ok",
+      "proxy_id": "local-sim-a",
+      "from_proxy": null,
+      "to_proxy": null,
+      "reason": null,
+      "retry_count": null,
+      "decision": "Proxy healthy: connection preserved (session affinity)."
+    },
+    {
+      "ts": "2026-10-17T05:47:07.448+00:00",
+      "event": "proxy.probe",
+      "outcome": "proxy_failure",
+      "proxy_id": "local-sim-a",
+      "from_proxy": null,
+      "to_proxy": null,
+      "reason": null,
+      "retry_count": 2,
+      "decision": null
+    },
+    {
+      "ts": "2026-10-17T05:47:07.453+00:00",
+      "event": "proxy.probe",
+      "outcome": "ok",
+      "proxy_id": "local-sim-b",
+      "from_proxy": null,
+      "to_proxy": null,
+      "reason": null,
+      "retry_count": 0,
+      "decision": null
+    },
+    {
+      "ts": "2026-10-17T05:47:07.453+00:00",
+      "event": "proxy.failover",
+      "outcome": "rebound",
+      "proxy_id": null,
+      "from_proxy": "local-sim-a",
+      "to_proxy": "local-sim-b",
+      "reason": "proxy_connect_timeout after 3 attempt(s)",
+      "retry_count": 2,
+      "decision": null
+    },
+    {
+      "ts": "2026-10-17T05:47:07.468+00:00",
+      "event": "proxy.session_decision",
+      "outcome": "failover",
+      "proxy_id": "local-sim-b",
+      "from_proxy": null,
+      "to_proxy": null,
+      "reason": null,
+      "retry_count": null,
+      "decision": "Controlled failover local-sim-a -> local-sim-b: proxy_connect_timeout after 3 attempt(s). Candidate health-checked before the session moved."
+    },
+    {
+      "ts": "2026-10-17T05:47:07.484+00:00",
+      "event": "proxy.probe",
+      "outcome": "ok",
+      "proxy_id": "local-sim-a",
+      "from_proxy": null,
+      "to_proxy": null,
+      "reason": null,
+      "retry_count": 0,
+      "decision": null
+    },
+    {
+      "ts": "2026-10-17T05:47:07.484+00:00",
+      "event": "proxy.probe",
+      "outcome": "ok",
+      "proxy_id": "local-sim-b",
+      "from_proxy": null,
+      "to_proxy": null,
+      "reason": null,
+      "retry_count": 0,
+      "decision": null
+    },
+    {
+      "ts": "2026-10-17T05:47:07.500+00:00",
+      "event": "proxy.session_decision",
+      "outcome": "ok",
+      "proxy_id": "local-sim-b",
+      "from_proxy": null,
+      "to_proxy": null,
+      "reason": null,
+      "retry_count": null,
+      "decision": "Proxy healthy: connection preserved (session affinity)."
+    },
+    {
+      "ts": "2026-10-17T05:47:07.944+00:00",
+      "event": "proxy.probe",
+      "outcome": "endpoint_failure",
+      "proxy_id": "local-sim-b",
+      "from_proxy": null,
+      "to_proxy": null,
+      "reason": null,
+      "retry_count": 2,
+      "decision": null
+    },
+    {
+      "ts": "2026-10-17T05:47:07.944+00:00",
+      "event": "proxy.session_decision",
+      "outcome": "endpoint_failure",
+      "proxy_id": "local-sim-b",
+      "from_proxy": null,
+      "to_proxy": null,
+      "reason": null,
+      "retry_count": null,
+      "decision": "The endpoint is failing (the proxy relayed an error). Proxy preserved: failover would not help."
+    },
+    {
+      "ts": "2026-10-17T05:47:07.960+00:00",
+      "event": "proxy.probe",
+      "outcome": "rate_limited",
+      "proxy_id": "local-sim-b",
+      "from_proxy": null,
+      "to_proxy": null,
+      "reason": null,
+      "retry_count": 0,
+      "decision": null
+    },
+    {
+      "ts": "2026-10-17T05:47:07.960+00:00",
+      "event": "proxy.session_decision",
+      "outcome": "rate_limited",
+      "proxy_id": "local-sim-b",
+      "from_proxy": null,
+      "to_proxy": null,
+      "reason": null,
+      "retry_count": null,
+      "decision": "Rate limited: backing off on the SAME proxy. Rotating proxies to escape a rate limit is not allowed."
+    },
+    {
+      "ts": "2026-10-17T05:47:07.975+00:00",
+      "event": "proxy.probe",
+      "outcome": "security_challenge",
+      "proxy_id": "local-sim-a",
+      "from_proxy": null,
+      "to_proxy": null,
+      "reason": null,
+      "retry_count": 0,
+      "decision": null
+    },
+    {
+      "ts": "2026-10-17T05:47:07.991+00:00",
+      "event": "proxy.session_paused",
+      "outcome": "paused_security_review",
+      "proxy_id": null,
+      "from_proxy": null,
+      "to_proxy": null,
+      "reason": "security challenge returned by the test endpoint",
+      "retry_count": null,
+      "decision": null
+    },
+    {
+      "ts": "2026-10-17T05:47:07.991+00:00",
+      "event": "proxy.session_decision",
+      "outcome": "paused_security_review",
+      "proxy_id": "local-sim-a",
+      "from_proxy": null,
+      "to_proxy": null,
+      "reason": null,
+      "retry_count": null,
+      "decision": "Security challenge: session PAUSED for human review. No retry and no proxy rotation - rotating to get past a challenge would be evasion."
+    }
+  ]
+}

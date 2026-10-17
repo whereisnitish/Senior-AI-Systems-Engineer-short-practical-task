@@ -1,0 +1,191 @@
+{
+  "report_meta": {
+    "title": "Weekly security audit report",
+    "generated_at": "2026-10-17T09:35:45.283059+00:00",
+    "generator": "Instagram Operations Manager",
+    "data_classification": "CANDIDATE_PROVIDED_TEST_ENVIRONMENT",
+    "integrations": {
+      "vault": {
+        "backend": "hashicorp_kv2",
+        "production_grade": true
+      },
+      "meta": {
+        "mode": "disabled",
+        "configured": false
+      },
+      "notifications": {
+        "backend": "smtp",
+        "configured": true
+      }
+    },
+    "verification_labels": {
+      "integration_verified": "Read directly from the authoritative system (configured integration, or this application's own records where it is the system of record).",
+      "human_confirmed": "Attested by a named, authorised human with an evidence reference; not machine-verified.",
+      "unverified": "No adequate evidence either way. Missing evidence is not proof of failure."
+    },
+    "notes": [
+      "The company test environment was not provided. The candidate created throwaway substitute resources (test brand, email, Instagram account, Meta business portfolio); they are not company-authorised resources.",
+      "Vault: a candidate-run HashiCorp Vault (not the company vault), KV v2. Presence and versions of vault:// references are machine-verified; the application token may not read Instagram secret values. References to other password managers stay human-confirmed.",
+      "Meta: integration not configured - business association is human-confirmed."
+    ]
+  },
+  "audit_run": {
+    "id": "aud_f2685dedbca5419f851257a7a712c327",
+    "trigger": "manual",
+    "idempotency_key": null,
+    "status": "completed",
+    "started_at": "2026-10-17T09:35:45.219510+00:00",
+    "finished_at": "2026-10-17T09:35:45.270221+00:00",
+    "attempt_count": 1
+  },
+  "totals": {
+    "accounts": 1,
+    "findings_new": 0,
+    "findings_reused": 1,
+    "findings_resolved": 0
+  },
+  "open_findings": [
+    {
+      "id": "fnd_69aefbf9fc12423c9276bbdd36ce636e",
+      "account_id": "acc_b1236a334e724a3eb461ff3480e92c84",
+      "check_name": "provisioning_tasks_complete",
+      "fingerprint": "provisioning_tasks_complete",
+      "severity": "medium",
+      "description": "Provisioning incomplete (awaiting_contact_assignment); pending steps: company_email, company_phone, signup, platform_verification, two_factor, profile, business_conversion, meta_link, roles_assigned",
+      "verification": "integration_verified",
+      "evidence_ref": "system-of-record:account_steps",
+      "status": "open",
+      "first_detected_at": "2026-10-17T05:50:08.240060+00:00",
+      "last_detected_at": "2026-10-17T09:35:45.263666+00:00",
+      "occurrence_count": 5,
+      "resolved_at": null,
+      "resolution_note": null,
+      "remediation_task": {
+        "id": "tsk_a3d45ab55cbf415bab207d218c1d0fd7",
+        "title": "Assign a company email alias for demo_workaccount",
+        "status": "pending",
+        "owner": {
+          "id": "per_88521111a9f0477aafcf71314ff1ad78",
+          "name": "Candidate (account owner)",
+          "status": "active"
+        },
+        "due_at": "2026-10-18T07:52:00.963530+00:00",
+        "origin": "provisioning"
+      },
+      "remediation_blocker": null
+    }
+  ],
+  "resolved_this_run": [],
+  "check_results": [
+    {
+      "account_id": "acc_b1236a334e724a3eb461ff3480e92c84",
+      "brand_name": "demo_workaccount",
+      "handle": "demo_workaccount",
+      "is_synthetic": false,
+      "checks": [
+        {
+          "check_name": "recovery_email_company_controlled",
+          "outcome": "not_applicable",
+          "severity": null,
+          "verification": "unverified",
+          "description": "Account not yet created on Instagram",
+          "evidence_ref": null,
+          "fingerprint": "recovery_email_company_controlled"
+        },
+        {
+          "check_name": "recovery_phone_company_controlled",
+          "outcome": "not_applicable",
+          "severity": null,
+          "verification": "unverified",
+          "description": "Account not yet created on Instagram",
+          "evidence_ref": null,
+          "fingerprint": "recovery_phone_company_controlled"
+        },
+        {
+          "check_name": "two_factor_enabled",
+          "outcome": "not_applicable",
+          "severity": null,
+          "verification": "unverified",
+          "description": "Account not yet created on Instagram",
+          "evidence_ref": null,
+          "fingerprint": "two_factor_enabled"
+        },
+        {
+          "check_name": "backup_codes_in_vault",
+          "outcome": "not_applicable",
+          "severity": null,
+          "verification": "unverified",
+          "description": "Account not yet created on Instagram",
+          "evidence_ref": null,
+          "fingerprint": "backup_codes_in_vault"
+        },
+        {
+          "check_name": "required_vault_references",
+          "outcome": "not_applicable",
+          "severity": null,
+          "verification": "unverified",
+          "description": "Account not yet created on Instagram",
+          "evidence_ref": null,
+          "fingerprint": "required_vault_references"
+        },
+        {
+          "check_name": "meta_business_association",
+          "outcome": "not_applicable",
+          "severity": null,
+          "verification": "unverified",
+          "description": "Account not yet created on Instagram",
+          "evidence_ref": null,
+          "fingerprint": "meta_business_association"
+        },
+        {
+          "check_name": "people_roles_match_register",
+          "outcome": "not_applicable",
+          "severity": null,
+          "verification": "unverified",
+          "description": "No role has been granted or confirmed yet (1 approved assignment(s) requested; granting them is a provisioning task). Nothing to compare.",
+          "evidence_ref": null,
+          "fingerprint": "people_roles_match_register"
+        },
+        {
+          "check_name": "access_records_fresh",
+          "outcome": "not_applicable",
+          "severity": null,
+          "verification": "unverified",
+          "description": "No active access records",
+          "evidence_ref": null,
+          "fingerprint": "access_records_fresh"
+        },
+        {
+          "check_name": "provisioning_tasks_complete",
+          "outcome": "finding",
+          "severity": "medium",
+          "verification": "integration_verified",
+          "description": "Provisioning incomplete (awaiting_contact_assignment); pending steps: company_email, company_phone, signup, platform_verification, two_factor, profile, business_conversion, meta_link, roles_assigned",
+          "evidence_ref": "system-of-record:account_steps",
+          "fingerprint": "provisioning_tasks_complete"
+        },
+        {
+          "check_name": "outstanding_security_offboarding_actions",
+          "outcome": "pass",
+          "severity": null,
+          "verification": "integration_verified",
+          "description": "No outstanding offboarding or security actions",
+          "evidence_ref": "system-of-record:tasks",
+          "fingerprint": "outstanding_security_offboarding_actions"
+        }
+      ],
+      "findings_new": 0,
+      "findings_reused": 1,
+      "findings_resolved": 0
+    }
+  ],
+  "unresolved_issues": [
+    {
+      "finding_id": "fnd_69aefbf9fc12423c9276bbdd36ce636e",
+      "severity": "medium",
+      "description": "Provisioning incomplete (awaiting_contact_assignment); pending steps: company_email, company_phone, signup, platform_verification, two_factor, profile, business_conversion, meta_link, roles_assigned",
+      "why_unresolved": "remediation task pending"
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% from "_macros.html" import pill, due %}
+{% block title %}Tasks{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Human tasks</h1><div class="sub">Every Instagram or Meta action is done by a person. Each task has an owner, a deadline, reminders and escalation.</div></div>
+</div>
+<div class="filters">
+  {% for key, label in views.items() %}<a href="/dashboard/tasks?view={{ key }}" class="{{ 'active' if view == key else '' }}">{{ label }}</a>{% endfor %}
+</div>
+<section class="card">
+  <div class="table-wrap"><table>
+    <thead><tr><th>Task</th><th>Owner</th><th>Status</th><th>Priority</th><th>Due</th><th class="num">Reminders</th><th class="num">Escalations</th></tr></thead>
+    <tbody>
+    {% for t in tasks %}
+      <tr>
+        <td><a class="row-title" href="/dashboard/tasks/{{ t.id }}">{{ t.title }}</a>
+          <div class="row-sub">{{ t.task_type|human }} · {{ t.origin }}{% if t.blocker_detail %} · <span class="overdue-text">{{ t.blocker_detail }}</span>{% endif %}</div></td>
+        <td>{{ t.owner.name if t.owner else '-' }}<div class="row-sub">supervisor: {{ t.supervisor.name if t.supervisor else '-' }}</div></td>
+        <td>{{ pill(t.status) }}</td>
+        <td>{{ pill(t.priority) }}</td>
+        <td>{% if t.status in ['completed', 'cancelled', 'failed'] %}<span class="muted nowrap">{{ (t.completed_at or t.updated_at)|rel(now_dt) }}</span>{% else %}{{ due(t.due_at, now_dt, t.is_overdue) }}{% endif %}</td>
+        <td class="num">{{ t.reminder_count }}</td>
+        <td class="num">{{ t.escalation_count }}</td>
+      </tr>
+    {% else %}<tr><td colspan="7" class="empty">No {{ views[view]|lower }} tasks.</td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+</section>
+{% endblock %}

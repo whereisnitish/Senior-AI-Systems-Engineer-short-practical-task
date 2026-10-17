@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% from "_macros.html" import pill, vlabel, due %}
+{% block title %}{{ task.title }}{% endblock %}
+{% block content %}
+<div class="breadcrumb"><a href="/dashboard/tasks">Tasks</a>{% if task.account_id %} / <a href="/dashboard/accounts/{{ task.account_id }}">{{ account_name or 'account' }}</a>{% endif %}</div>
+<div class="page-head">
+  <div>
+    <h1>{{ task.title }}</h1>
+    <div class="sub">{{ task.task_type|human }} · origin {{ task.origin }} · key <span class="mono">{{ task.idempotency_key }}</span></div>
+  </div>
+  <div class="actions">{{ pill(task.status) }} {{ pill(task.priority) }}</div>
+</div>
+<div class="meta-grid">
+  <div class="fact"><div class="k">Owner</div><div class="v">{{ task.owner.name if task.owner else '-' }}</div></div>
+  <div class="fact"><div class="k">Supervisor (escalation)</div><div class="v">{{ task.supervisor.name if task.supervisor else '-' }}</div></div>
+  <div class="fact"><div class="k">Due</div><div class="v">{{ due(task.due_at, now_dt, task.is_overdue) }}</div><span class="muted small">{{ task.due_at|dt }}</span></div>
+  <div class="fact"><div class="k">Reminders / escalations</div><div class="v">{{ task.reminder_count }} / {{ task.escalation_count }}</div><span class="muted small">{% if task.last_reminder_at %}last reminder {{ task.last_reminder_at|rel(now_dt) }}{% else %}none yet{% endif %}</span></div>
+</div>
+{% if task.blocker_detail %}<div class="banner error"><strong>Blocked:</strong> {{ task.blocker_detail }}</div>{% endif %}
+{% if task.error_detail %}<div class="banner warn">{{ task.error_detail }}</div>{% endif %}
+{% if error %}
+<div class="banner error"><strong>Not saved:</strong> {{ error }}
+  {% if problems %}<ul>{% for p in problems %}<li><strong>{{ p.field }}</strong>: {{ p.problem }}</li>{% endfor %}</ul>{% endif %}
+</div>
+{% endif %}
+
+<div class="grid main-side">
+  <div>
+    <section class="card">
+      <h2>Instructions</h2>
+      <pre class="instructions">{{ task.description }}</pre>
+    </section>
+    <section class="card">
+      <h2>History</h2>
+      <ul class="timeline">
+        {% for e in task.events|reverse %}
+        <li><div><strong>{{ e.event_type|human }}</strong>{% if e.to_status and e.from_status != e.to_status %} <span class="muted">{{ e.from_status or '-' }} &rarr; {{ e.to_status }}</span>{% endif %}</div>
+          <div class="when">{{ e.at|dt }} · {{ e.actor_id }}</div>
+          {% if e.detail %}<div class="detail">{% for k, v in e.detail.items() %}{{ k|human }}: {{ v }}{% if not loop.last %} · {% endif %}{% endfor %}</div>{% endif %}</li>
+        {% endfor %}
+      </ul>
+    </section>
+  </div>
+
+  <div>
+    {% if task.status in ['pending', 'in_progress', 'waiting_for_human', 'overdue', 'blocked'] %}
+    <section class="card">
+      <h2>Record completion</h2>
+      <div class="safety">Record what you did and how you know. <strong>Never</strong> enter passwords, codes or backup codes: store them in the vault and give the reference.</div>
+      <form method="post" action="/dashboard/tasks/{{ task.id }}/complete" autocomplete="off">
+        <input type="hidden" name="csrf_token" value="{{ csrf }}">
+        {% for f in fields %}
+          <div class="field">
+          {% if f.kind == 'confirm' %}
+            <label class="check"><input type="checkbox" name="outcome.{{ f.name }}" value="true"> <span>{{ f.label }}</span></label>
+          {% elif f.kind == 'choice' %}
+            <label for="o-{{ f.name }}">{{ f.label }}{% if not f.required %} <span class="muted">(optional)</span>{% endif %}</label>
+            <select id="o-{{ f.name }}" name="outcome.{{ f.name }}"><option value="">Choose...</option>{% for c in f.choices %}<option value="{{ c }}">{{ c|human }}</option>{% endfor %}</select>
+          {% else %}
+            <label for="o-{{ f.name }}">{{ f.label }}{% if not f.required %} <span class="muted">(optional)</span>{% endif %}</label>
+            <input id="o-{{ f.name }}" name="outcome.{{ f.name }}" type="text" autocomplete="off" spellcheck="false">
+            {% if f.kind == 'vault_ref' %}<div class="help">A reference such as bw://Instagram/brand/password - never the secret itself.</div>{% endif %}
+          {% endif %}
+          </div>
+        {% endfor %}
+        <div class="field"><label for="evidence_ref">Evidence (required)</label>
+          <input id="evidence_ref" name="evidence_ref" type="text" required placeholder="{{ evidence_hint }}" autocomplete="off">
+          <div class="help">What you observed and when, or a ticket / vault reference.</div></div>
+        <div class="field"><label for="note">Note <span class="muted">(optional)</span></label><textarea id="note" name="note" rows="2"></textarea></div>
+        <button type="submit">Complete task</button>
+      </form>
+    </section>
+    <section class="card">
+      <h2>Other actions</h2>
+      <div class="actions">
+        <form method="post" action="/dashboard/tasks/{{ task.id }}/start" class="inline"><input type="hidden" name="csrf_token" value="{{ csrf }}"><button type="submit" class="secondary">Mark in progress</button></form>
+      </div>
+      <form method="post" action="/dashboard/tasks/{{ task.id }}/block">
+        <input type="hidden" name="csrf_token" value="{{ csrf }}">
+        <div class="field"><label for="reason">Report a blocker</label><input id="reason" name="reason" type="text" required placeholder="What is blocking you? (no secrets)"></div>
+        <button type="submit" class="danger">Mark blocked</button>
+      </form>
+    </section>
+    {% else %}
+    <section class="card">
+      <h2>Outcome</h2>
+      <dl class="kv">
+        <dt>Status</dt><dd>{{ pill(task.status) }}</dd>
+        <dt>Completed</dt><dd>{{ task.completed_at|dt }}</dd>
+        <dt>Verification</dt><dd>{{ vlabel(task.verification_source) }}</dd>
+        <dt>Evidence</dt><dd>{{ task.completion_evidence_ref or '-' }}</dd>
+        {% for k, v in task.outcome.items() %}<dt>{{ k|human }}</dt><dd>{{ v }}</dd>{% endfor %}
+      </dl>
+    </section>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

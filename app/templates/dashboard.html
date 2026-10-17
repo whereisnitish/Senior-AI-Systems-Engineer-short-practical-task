@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% from "_macros.html" import pill, vlabel, run_button %}
+{% block title %}Overview{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Overview</h1>
+    <div class="sub">Coordination of the company-authorised Instagram account. Every platform action is a tracked human task.</div>
+  </div>
+  <div class="actions">
+    {{ run_button(csrf, 'reminders', 'Run reminders & escalation', '/dashboard', 'secondary') }}
+    {{ run_button(csrf, 'audit', 'Run security audit', '/dashboard/audit') }}
+  </div>
+</div>
+
+<div class="kpis">
+  <a class="kpi {{ 'good' if counts.accounts and counts.provisioned == counts.accounts else '' }}" href="/dashboard/accounts">
+    <div class="label">Provisioned</div><div class="value">{{ counts.provisioned }}/{{ counts.accounts }}</div><div class="hint">accounts</div></a>
+  <a class="kpi {{ 'alert' if counts.overdue else '' }}" href="/dashboard/tasks?view=overdue">
+    <div class="label">Open tasks</div><div class="value">{{ counts.open_tasks }}</div><div class="hint">{{ counts.overdue }} overdue</div></a>
+  <a class="kpi {{ 'alert' if counts.blocked else '' }}" href="/dashboard/tasks?view=blocked">
+    <div class="label">Blocked</div><div class="value">{{ counts.blocked }}</div><div class="hint">waiting on someone</div></a>
+  <a class="kpi {{ 'alert' if counts.findings_high else '' }}" href="/dashboard/audit">
+    <div class="label">Open findings</div><div class="value">{{ counts.findings }}</div><div class="hint">{{ counts.findings_high }} high or critical</div></a>
+  <a class="kpi {{ 'alert' if counts.offboarding_blocked else '' }}" href="/dashboard/offboarding">
+    <div class="label">Offboarding</div><div class="value">{{ counts.offboarding_open }}</div><div class="hint">{{ counts.offboarding_blocked }} blocked actions</div></a>
+  <a class="kpi {{ 'good' if counts.proxies and counts.proxies_healthy == counts.proxies else ('alert' if counts.proxies else '') }}" href="/dashboard/proxies">
+    <div class="label">Proxies healthy</div><div class="value">{{ counts.proxies_healthy }}/{{ counts.proxies }}</div><div class="hint">{{ counts.paused_sessions }} paused sessions</div></a>
+</div>
+
+<div class="grid main-side">
+  <div>
+    <section class="card">
+      <div class="card-head"><h2>Account register</h2><a href="/dashboard/accounts" class="small">All accounts</a></div>
+      {% for a in accounts %}
+        {% set done = a.steps|selectattr('state', 'equalto', 'completed')|list|length %}
+        <div class="account-card">
+          <div class="account-top">
+            <div>
+              <a class="account-name" href="/dashboard/accounts/{{ a.id }}">{{ a.brand_name }}</a>
+              <span class="handle">{{ ('@' ~ a.handles.selected) if a.handles.selected else 'handle not selected' }}</span>
+              {% if a.is_synthetic %}<span class="tag synthetic">synthetic</span>{% endif %}
+            </div>
+            {{ pill(a.provisioning_status) }}
+          </div>
+          <div class="progress-row"><progress value="{{ done }}" max="{{ a.steps|length }}"></progress><span>{{ done }} / {{ a.steps|length }} steps</span></div>
+          <div class="dots">{% for s in a.steps %}<span class="dot {{ s.state }}" title="{{ s.step|human }}: {{ s.state }}"></span>{% endfor %}</div>
+          {% if a.blocker %}<div class="banner error"><strong>{{ a.blocker.code }}</strong> {{ a.blocker.detail }}</div>{% endif %}
+          <div class="facts">
+            <div class="fact"><div class="k">Owner</div><div class="v">{{ a.owner.name if a.owner else '-' }}</div><span class="muted small">last verified {{ a.last_verified_at|rel(now_dt) }}</span></div>
+            <div class="fact"><div class="k">Two-factor</div><div class="v">{{ a.two_factor.status|human }} · {{ a.two_factor.method|human }}</div>{{ vlabel(a.two_factor.verification) }}</div>
+            <div class="fact"><div class="k">Backup codes</div><div class="v">{{ a.backup_codes.status|human }}</div>{{ vlabel(a.backup_codes.verification) }}</div>
+            <div class="fact"><div class="k">Meta business</div><div class="v">{{ a.meta.link_status|human }}</div>{{ vlabel(a.meta.verification) }}</div>
+          </div>
+        </div>
+        {% if not loop.last %}<hr class="sep">{% endif %}
+      {% else %}
+        <p class="empty">No accounts yet. Create one with <code>python -m scripts.create_account</code> or <code>POST /api/v1/accounts</code>.</p>
+      {% endfor %}
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2>Latest notifications</h2><a href="/dashboard/notifications" class="small">All notifications</a></div>
+      {% if counts.undelivered %}<div class="banner warn">{{ counts.undelivered }} notification(s) not delivered: no notification provider is configured, so they are listed here instead.</div>{% endif %}
+      <div class="table-wrap"><table>
+        <thead><tr><th>Kind</th><th>To</th><th>Subject</th><th>Delivery</th><th>When</th></tr></thead>
+        <tbody>
+        {% for n in notifications %}
+          <tr><td>{{ n.kind }}</td><td>{{ n.recipient.name if n.recipient else '-' }}</td><td>{{ n.subject }}</td><td>{{ pill(n.delivery_status) }}</td><td class="nowrap">{{ n.created_at|rel(now_dt) }}</td></tr>
+        {% else %}<tr><td colspan="5" class="empty">No notifications yet.</td></tr>{% endfor %}
+        </tbody>
+      </table></div>
+    </section>
+  </div>
+
+  <div>
+    <section class="card">
+      <div class="card-head"><h2>Needs attention</h2><span class="muted small">{{ attention|length }} item(s)</span></div>
+      {% if attention %}
+      <ul class="attention">
+        {% for item in attention[:8] %}
+        <li><span class="pill {{ item.tone }}">{{ item.tag }}</span>
+          <div><a class="what" href="{{ item.href }}">{{ item.what }}</a><div class="why">{{ item.why }}</div></div></li>
+        {% endfor %}
+      </ul>
+      {% if attention|length > 8 %}<p class="muted small">and {{ attention|length - 8 }} more</p>{% endif %}
+      {% else %}<p class="all-clear">Nothing overdue, blocked or high severity.</p>{% endif %}
+    </section>
+
+    <section class="card">
+      <h2>System status</h2>
+      <div class="status-list">
+        <div class="status-row"><span class="k">Instagram</span><span class="chip muted">no automation (guided human tasks)</span></div>
+        <div class="status-row"><span class="k">Vault</span><span class="chip {{ 'ok' if vault_production else 'warn' }}">{{ vault_name|human }}{% if not vault_production %} (synthetic, dev-only){% endif %}</span></div>
+        <div class="status-row"><span class="k">Meta</span><span class="chip {{ 'ok' if meta_configured else 'muted' }}">{{ 'read-only verification' if meta_configured else 'not configured (human-confirmed)' }}</span></div>
+        <div class="status-row"><span class="k">Notifications</span><span class="chip {{ 'ok' if notifier_configured else 'warn' }}">{{ 'provider configured' if notifier_configured else 'no provider - not delivered' }}</span></div>
+        <div class="status-row"><span class="k">Test resources</span><span class="chip {{ 'warn' if environment_label == 'candidate_provided_test_environment' else 'muted' }}">resources: {{ environment_label|human }}</span></div>
+        <div class="status-row"><span class="k">Latest audit</span><span>{% if latest_run %}{{ pill(latest_run.status) }} <span class="muted small">{{ latest_run.at|rel(now_dt) }}</span>{% else %}<span class="muted">never run</span>{% endif %}</span></div>
+      </div>
+    </section>
+  </div>
+</div>
+{% endblock %}

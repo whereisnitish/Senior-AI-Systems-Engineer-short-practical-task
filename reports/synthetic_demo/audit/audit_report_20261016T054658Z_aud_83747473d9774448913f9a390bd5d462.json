@@ -1,0 +1,246 @@
+{
+  "report_meta": {
+    "title": "Weekly security audit report",
+    "generated_at": "2026-10-16T05:46:58+00:00",
+    "generator": "Instagram Operations Manager",
+    "data_classification": "SYNTHETIC_DEMO_DATA",
+    "integrations": {
+      "vault": {
+        "backend": "dev_memory",
+        "production_grade": false
+      },
+      "meta": {
+        "mode": "disabled",
+        "configured": false
+      },
+      "notifications": {
+        "backend": "none",
+        "configured": false
+      }
+    },
+    "verification_labels": {
+      "integration_verified": "Read directly from the authoritative system (configured integration, or this application's own records where it is the system of record).",
+      "human_confirmed": "Attested by a named, authorised human with an evidence reference; not machine-verified.",
+      "unverified": "No adequate evidence either way. Missing evidence is not proof of failure."
+    },
+    "notes": [
+      "Contains explicitly synthetic records created by scripts/seed_demo.py. Synthetic results are NOT live-account verification.",
+      "Vault: development-only in-memory vault holding synthetic secrets - not the company vault.",
+      "Meta: integration not configured - business association is human-confirmed.",
+      "Notifications: no provider configured - reminders/escalations were queued and shown on the dashboard but NOT delivered."
+    ]
+  },
+  "audit_run": {
+    "id": "aud_83747473d9774448913f9a390bd5d462",
+    "trigger": "scheduled",
+    "idempotency_key": "weekly:2026-W42",
+    "status": "completed",
+    "started_at": "2026-10-16T05:46:58+00:00",
+    "finished_at": "2026-10-16T05:46:58+00:00",
+    "attempt_count": 1
+  },
+  "totals": {
+    "accounts": 1,
+    "findings_new": 1,
+    "findings_reused": 1,
+    "findings_resolved": 1
+  },
+  "open_findings": [
+    {
+      "id": "fnd_86df1a7b5f7449bbb796d4f4947b51d1",
+      "account_id": "acc_d24c3d54a0ef4488a8064ee13004b8e9",
+      "check_name": "backup_codes_in_vault",
+      "fingerprint": "backup_codes_in_vault",
+      "severity": "high",
+      "description": "The vault reports no entry at the recorded backup-code reference",
+      "verification": "integration_verified",
+      "evidence_ref": "devvault://instagram/lumen-lab/backup-codes",
+      "status": "open",
+      "first_detected_at": "2026-10-16T05:46:58+00:00",
+      "last_detected_at": "2026-10-16T05:46:58+00:00",
+      "occurrence_count": 1,
+      "resolved_at": null,
+      "resolution_note": null,
+      "remediation_task": {
+        "id": "tsk_03f23be5eadc4d0897f4e3fca74ecc1d",
+        "title": "Store (or replace) backup codes for @lumenlabtestbrand in the vault",
+        "status": "pending",
+        "owner": {
+          "id": "per_04a066bff951469c9a7f690d0a0d79ba",
+          "name": "Sam Rivera (SYNTHETIC account owner)",
+          "status": "active"
+        },
+        "due_at": "2026-10-19T05:46:58+00:00",
+        "origin": "audit"
+      },
+      "remediation_blocker": null
+    },
+    {
+      "id": "fnd_90716fa5591c44aeaa80de46b99c914f",
+      "account_id": "acc_d24c3d54a0ef4488a8064ee13004b8e9",
+      "check_name": "two_factor_enabled",
+      "fingerprint": "two_factor_enabled",
+      "severity": "low",
+      "description": "Two-factor authentication uses SMS (SIM-swap risk); prefer an authenticator app or security key",
+      "verification": "human_confirmed",
+      "evidence_ref": "2FA enabled in Accounts Center; codes saved straight to vault [SYNTHETIC]",
+      "status": "open",
+      "first_detected_at": "2026-10-10T17:46:58+00:00",
+      "last_detected_at": "2026-10-16T05:46:58+00:00",
+      "occurrence_count": 3,
+      "resolved_at": null,
+      "resolution_note": null,
+      "remediation_task": {
+        "id": "tsk_0f33e12514884b0e9674192144d5cf3f",
+        "title": "Enable two-factor authentication on @lumenlabtestbrand and vault the backup codes",
+        "status": "pending",
+        "owner": {
+          "id": "per_04a066bff951469c9a7f690d0a0d79ba",
+          "name": "Sam Rivera (SYNTHETIC account owner)",
+          "status": "active"
+        },
+        "due_at": "2026-10-24T18:46:58+00:00",
+        "origin": "audit"
+      },
+      "remediation_blocker": null
+    }
+  ],
+  "resolved_this_run": [
+    {
+      "id": "fnd_fd22b389194d4effa401d583ea7fd18a",
+      "account_id": "acc_d24c3d54a0ef4488a8064ee13004b8e9",
+      "check_name": "meta_business_association",
+      "fingerprint": "meta_business_association",
+      "severity": "medium",
+      "description": "The Meta business association has not been confirmed yet",
+      "verification": "unverified",
+      "evidence_ref": null,
+      "status": "resolved",
+      "first_detected_at": "2026-10-10T17:46:58+00:00",
+      "last_detected_at": "2026-10-10T17:46:58+00:00",
+      "occurrence_count": 1,
+      "resolved_at": "2026-10-16T05:46:58+00:00",
+      "resolution_note": "Not detected in audit run aud_83747473d9774448913f9a390bd5d462",
+      "remediation_task": null,
+      "remediation_blocker": "covered by the provisioning workflow (step 'meta_link' still pending)"
+    }
+  ],
+  "check_results": [
+    {
+      "account_id": "acc_d24c3d54a0ef4488a8064ee13004b8e9",
+      "brand_name": "Lumen Lab Test Brand (SYNTHETIC)",
+      "handle": "lumenlabtestbrand",
+      "is_synthetic": true,
+      "checks": [
+        {
+          "check_name": "recovery_email_company_controlled",
+          "outcome": "pass",
+          "severity": null,
+          "verification": "human_confirmed",
+          "description": "Recovery email confirmed company-controlled",
+          "evidence_ref": "Accounts Center personal details checked on company device [SYNTHETIC]",
+          "fingerprint": "recovery_email_company_controlled"
+        },
+        {
+          "check_name": "recovery_phone_company_controlled",
+          "outcome": "pass",
+          "severity": null,
+          "verification": "human_confirmed",
+          "description": "Recovery phone confirmed company-controlled",
+          "evidence_ref": "Accounts Center personal details checked on company device [SYNTHETIC]",
+          "fingerprint": "recovery_phone_company_controlled"
+        },
+        {
+          "check_name": "two_factor_enabled",
+          "outcome": "finding",
+          "severity": "low",
+          "verification": "human_confirmed",
+          "description": "Two-factor authentication uses SMS (SIM-swap risk); prefer an authenticator app or security key",
+          "evidence_ref": "2FA enabled in Accounts Center; codes saved straight to vault [SYNTHETIC]",
+          "fingerprint": "two_factor_enabled"
+        },
+        {
+          "check_name": "backup_codes_in_vault",
+          "outcome": "finding",
+          "severity": "high",
+          "verification": "integration_verified",
+          "description": "The vault reports no entry at the recorded backup-code reference",
+          "evidence_ref": "devvault://instagram/lumen-lab/backup-codes",
+          "fingerprint": "backup_codes_in_vault"
+        },
+        {
+          "check_name": "required_vault_references",
+          "outcome": "pass",
+          "severity": null,
+          "verification": "integration_verified",
+          "description": "Required vault references present: password",
+          "evidence_ref": null,
+          "fingerprint": "required_vault_references"
+        },
+        {
+          "check_name": "meta_business_association",
+          "outcome": "pass",
+          "severity": null,
+          "verification": "human_confirmed",
+          "description": "Meta business association human-confirmed (Meta integration not configured)",
+          "evidence_ref": "account listed under Business settings > Instagram accounts [SYNTHETIC]",
+          "fingerprint": "meta_business_association"
+        },
+        {
+          "check_name": "people_roles_match_register",
+          "outcome": "pass",
+          "severity": null,
+          "verification": "human_confirmed",
+          "description": "Register roles match the approved register (platform-side roles human-confirmed; no Meta role integration)",
+          "evidence_ref": null,
+          "fingerprint": "people_roles_match_register"
+        },
+        {
+          "check_name": "access_records_fresh",
+          "outcome": "pass",
+          "severity": null,
+          "verification": "human_confirmed",
+          "description": "All 4 active access record(s) verified within 30 days",
+          "evidence_ref": null,
+          "fingerprint": "access_records_fresh"
+        },
+        {
+          "check_name": "provisioning_tasks_complete",
+          "outcome": "pass",
+          "severity": null,
+          "verification": "integration_verified",
+          "description": "All provisioning steps complete",
+          "evidence_ref": "system-of-record:account_steps",
+          "fingerprint": "provisioning_tasks_complete"
+        },
+        {
+          "check_name": "outstanding_security_offboarding_actions",
+          "outcome": "pass",
+          "severity": null,
+          "verification": "integration_verified",
+          "description": "No outstanding offboarding or security actions",
+          "evidence_ref": "system-of-record:tasks",
+          "fingerprint": "outstanding_security_offboarding_actions"
+        }
+      ],
+      "findings_new": 1,
+      "findings_reused": 1,
+      "findings_resolved": 1
+    }
+  ],
+  "unresolved_issues": [
+    {
+      "finding_id": "fnd_86df1a7b5f7449bbb796d4f4947b51d1",
+      "severity": "high",
+      "description": "The vault reports no entry at the recorded backup-code reference",
+      "why_unresolved": "remediation task pending"
+    },
+    {
+      "finding_id": "fnd_90716fa5591c44aeaa80de46b99c914f",
+      "severity": "low",
+      "description": "Two-factor authentication uses SMS (SIM-swap risk); prefer an authenticator app or security key",
+      "why_unresolved": "remediation task pending"
+    }
+  ],
+  "errors": []
+}

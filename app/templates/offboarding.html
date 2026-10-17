@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% from "_macros.html" import pill, vlabel, run_button %}
+{% block title %}Offboarding{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Offboarding</h1><div class="sub">A pending action means a task exists. It does <strong>not</strong> mean access has been removed.</div></div>
+</div>
+{% for c in cases %}
+<section class="card">
+  <div class="card-head">
+    <div><h2>{{ c.person.name if c.person else '-' }}</h2>
+      <div class="muted small">case <span class="mono">{{ c.id }}</span> · opened {{ c.created_at|dt }} · {{ c.reason }}{% if c.replacement_admin %} · replacement admin {{ c.replacement_admin.name }}{% endif %}</div></div>
+    <div class="actions">{{ pill(c.status) }}
+      <span class="pill ok plain">{{ c.completed|length }} completed</span>
+      <span class="pill info plain">{{ c.pending|length }} pending</span>
+      <span class="pill {{ 'bad' if c.blocked else '' }} plain">{{ c.blocked|length }} blocked</span>
+      {% if c.status == 'open' %}{{ run_button(csrf, 'offboarding-' ~ c.id, 'Re-run reconciliation', '/dashboard/offboarding', 'secondary small') }}{% endif %}</div>
+  </div>
+  <progress value="{{ c.completed|length }}" max="{{ c.completed|length + c.pending|length + c.blocked|length }}"></progress>
+  <div class="grid three">
+    <div class="bucket"><h3><span class="pill ok plain">Completed</span></h3>
+      <ul class="attention">{% for a in c.completed %}<li>{{ vlabel(a.verification) }}<div><span class="what">{{ a.description }}</span><div class="why">{{ a.evidence_ref or '-' }} · {{ a.owner.name if a.owner else 'system' }}</div></div></li>{% else %}<li class="muted">None yet.</li>{% endfor %}</ul></div>
+    <div class="bucket"><h3><span class="pill info plain">Pending</span></h3>
+      <ul class="attention">{% for a in c.pending %}<li>{{ pill(a.task.status if a.task else 'waiting') }}<div>{% if a.task %}<a class="what" href="/dashboard/tasks/{{ a.task.id }}">{{ a.description }}</a>{% else %}<span class="what">{{ a.description }}</span>{% endif %}
+        <div class="why">{{ a.owner.name if a.owner else 'waiting on prerequisite actions' }}</div></div></li>{% else %}<li class="muted">Nothing pending.</li>{% endfor %}</ul></div>
+    <div class="bucket"><h3><span class="pill {{ 'bad' if c.blocked else '' }} plain">Blocked</span></h3>
+      <ul class="attention">{% for a in c.blocked %}<li><span class="pill bad">{{ a.blocker_code }}</span><div><span class="what">{{ a.description }}</span><div class="why">{{ a.blocker_detail }} · responsible: {{ a.owner.name if a.owner else '-' }}</div></div></li>{% else %}<li class="muted">Nothing blocked.</li>{% endfor %}</ul></div>
+  </div>
+</section>
+{% else %}
+<section class="card"><p class="empty">No offboarding cases. Start one with <code>POST /api/v1/offboarding</code>.</p></section>
+{% endfor %}
+{% endblock %}

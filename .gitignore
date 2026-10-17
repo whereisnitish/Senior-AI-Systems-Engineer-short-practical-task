@@ -1,0 +1,41 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local configuration and anything that could hold a secret
+.env
+.env.*
+!.env.example
+secrets/
+*.pem
+*.key
+*.p12
+vault-token*
+vault-data/
+*token*.txt
+*.local.json
+*.synthetic.json
+config/proxies.json
+
+# Runtime state (databases, synthetic dev vault mirror, logs)
+data/
+logs/
+*.db
+*.db-wal
+*.db-shm
+
+# Reports are redacted deliverables and are tracked; scratch output is not.
+reports/**/*.tmp
+
+# Public/free proxy lists must never be used or committed
+*proxy-list*.json
+
+# Tool binaries (e.g. a local vault.exe) are never committed or packaged
+*.exe
+*.dll

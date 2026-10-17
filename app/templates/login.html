@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in · Instagram Ops Manager</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="login-wrap">
+  <section class="card login-card">
+    <div class="logo"><span class="logo-mark">IO</span><span>Instagram Ops Manager</span></div>
+    <h1>Sign in</h1>
+    <p class="muted">Paste your operator token (it starts with <code>iom_</code>). It is exchanged for a short-lived session cookie and is never stored in the browser.</p>
+    {% if error %}<div class="banner error">{{ error }}</div>{% endif %}
+    <form method="post" action="/login" autocomplete="off">
+      <div class="field">
+        <label for="token">Operator token</label>
+        <input id="token" name="token" type="password" required autocomplete="off" spellcheck="false">
+      </div>
+      <button type="submit">Sign in</button>
+    </form>
+    <p class="muted small">No token yet? An administrator creates one with <code>python -m scripts.create_operator</code>. Never paste tokens into chat or tickets.</p>
+  </section>
+</div>
+</body>
+</html>

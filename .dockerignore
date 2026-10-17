@@ -1,0 +1,11 @@
+.venv
+.env
+.env.*
+data
+logs
+secrets
+tests
+.pytest_cache
+**/__pycache__
+*.db*
+vault-data

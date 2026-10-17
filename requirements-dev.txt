@@ -1,0 +1,4 @@
+-r requirements.txt
+pytest==8.3.5
+# Operator-run local proxies for the live proxy check (scripts/proxy_check.py); not used by the app itself.
+proxy.py==2.4.9

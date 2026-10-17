@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% from "_macros.html" import pill, run_button %}
+{% block title %}Proxies{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Proxies</h1><div class="sub">Preserve by default. Fail over only when the proxy itself fails. Never rotate because of a rate limit or a challenge.</div></div>
+  <div class="actions">{% if healthcheck_url %}<span class="muted small">neutral endpoint: <span class="mono">{{ healthcheck_url }}</span></span>{{ run_button(csrf, 'proxies', 'Run health check', '/dashboard/proxies') }}{% endif %}</div>
+</div>
+
+<section class="card">
+  <h2>Approved proxies</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Proxy</th><th>Health</th><th>Last success</th><th>Last failure</th><th class="num">Latency</th><th class="num">Consecutive failures</th><th class="num">Checks</th></tr></thead>
+    <tbody>
+    {% for p in proxies %}
+      <tr><td class="row-title">{{ p.id }}{% if not p.approved %} <span class="tag">not approved</span>{% endif %}<div class="row-sub mono">{{ p.endpoint }}{% if p.credential_ref %} · {{ p.credential_ref }}{% endif %}</div></td>
+        <td>{{ pill(p.health_status) }}{% if p.cooldown_until %}<div class="row-sub">cooldown until {{ p.cooldown_until|dt }}</div>{% endif %}</td>
+        <td class="nowrap">{{ p.last_success_at|rel(now_dt) }}</td>
+        <td>{{ (p.last_failure_kind or '-')|human }}{% if p.last_failure_at %}<div class="row-sub">{{ p.last_failure_at|rel(now_dt) }}</div>{% endif %}</td>
+        <td class="num">{{ p.last_latency_ms ~ ' ms' if p.last_latency_ms is not none else '-' }}</td>
+        <td class="num">{{ p.consecutive_failures }}</td><td class="num">{{ p.total_checks }}</td></tr>
+    {% else %}<tr><td colspan="7" class="empty">No approved proxies configured (PROXY_CONFIG_FILE).</td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+</section>
+
+<div class="grid two">
+  <section class="card">
+    <h2>Sessions (affinity)</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Purpose</th><th>Proxy</th><th>Status</th><th class="num">Failovers</th></tr></thead>
+      <tbody>
+      {% for s in sessions %}
+        <tr><td class="row-title">{{ s.purpose }}<div class="row-sub">started {{ s.started_at|rel(now_dt) }}</div></td><td class="mono">{{ s.proxy_id }}</td>
+          <td>{{ pill(s.status) }}{% if s.pause_reason %}<div class="row-sub">{{ s.pause_reason }}</div>{% endif %}{% if s.review_task_id %}<div class="row-sub"><a href="/dashboard/tasks/{{ s.review_task_id }}">review task</a></div>{% endif %}</td>
+          <td class="num">{{ s.failover_count }}</td></tr>
+      {% else %}<tr><td colspan="4" class="empty">No sessions yet.</td></tr>{% endfor %}
+      </tbody>
+    </table></div>
+  </section>
+  <section class="card">
+    <h2>Recent events</h2>
+    <ul class="timeline">
+      {% for e in events %}
+        <li><div><strong>{{ e.event_type|human }}</strong> {{ pill(e.outcome) }} <span class="mono small">{{ e.proxy_id or '' }}</span></div>
+          <div class="when">{{ e.at|dt }}</div>
+          {% if e.detail.from_proxy %}<div class="detail">{{ e.detail.from_proxy }} &rarr; {{ e.detail.to_proxy }} · {{ e.detail.reason }}</div>{% elif e.detail.attempt_count %}<div class="detail">{{ e.detail.attempt_count }} attempt(s) · {{ (e.detail.failure_kind or '')|human }}</div>{% endif %}</li>
+      {% else %}<li class="muted">No events yet.</li>{% endfor %}
+    </ul>
+  </section>
+</div>
+{% endblock %}

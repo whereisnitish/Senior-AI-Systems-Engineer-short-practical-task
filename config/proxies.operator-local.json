@@ -1,0 +1,25 @@
+{
+  "source": "Operator-run local proxies (open-source proxy.py on 127.0.0.1, controlled by the candidate). No company-approved proxies were provided; public/free proxy lists were deliberately NOT used.",
+  "proxies": [
+    {
+      "id": "operator-local-a",
+      "scheme": "http",
+      "host": "127.0.0.1",
+      "port": 8899,
+      "credential_ref": null,
+      "priority": 1,
+      "approved": true,
+      "description": "proxy.py on loopback, port 8899 (start: python -m proxy --hostname 127.0.0.1 --port 8899)"
+    },
+    {
+      "id": "operator-local-b",
+      "scheme": "http",
+      "host": "127.0.0.1",
+      "port": 8900,
+      "credential_ref": null,
+      "priority": 2,
+      "approved": true,
+      "description": "proxy.py on loopback, port 8900 (start: python -m proxy --hostname 127.0.0.1 --port 8900)"
+    }
+  ]
+}

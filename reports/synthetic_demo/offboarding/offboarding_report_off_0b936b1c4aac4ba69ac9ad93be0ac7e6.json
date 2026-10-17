@@ -1,0 +1,304 @@
+{
+  "report_meta": {
+    "title": "Offboarding report",
+    "generated_at": "2026-10-17T05:47:11.830663+00:00",
+    "generator": "Instagram Operations Manager",
+    "data_classification": "SYNTHETIC_DEMO_DATA",
+    "integrations": {
+      "vault": {
+        "backend": "dev_memory",
+        "production_grade": false
+      },
+      "meta": {
+        "mode": "disabled",
+        "configured": false
+      },
+      "notifications": {
+        "backend": "none",
+        "configured": false
+      }
+    },
+    "verification_labels": {
+      "integration_verified": "Read directly from the authoritative system (configured integration, or this application's own records where it is the system of record).",
+      "human_confirmed": "Attested by a named, authorised human with an evidence reference; not machine-verified.",
+      "unverified": "No adequate evidence either way. Missing evidence is not proof of failure."
+    },
+    "notes": [
+      "Contains explicitly synthetic records created by scripts/seed_demo.py. Synthetic results are NOT live-account verification.",
+      "Vault: development-only in-memory vault holding synthetic secrets - not the company vault.",
+      "Meta: integration not configured - business association is human-confirmed.",
+      "Notifications: no provider configured - reminders/escalations were queued and shown on the dashboard but NOT delivered."
+    ]
+  },
+  "case": {
+    "id": "off_0b936b1c4aac4ba69ac9ad93be0ac7e6",
+    "person": {
+      "id": "per_c38fc433e2224e87b30e12901b848251",
+      "name": "Jordan Patel (SYNTHETIC departing tester)",
+      "status": "departing"
+    },
+    "status": "open",
+    "reason": "SYNTHETIC test team member leaving the project",
+    "replacement_admin": null,
+    "created_at": "2026-10-16T07:46:58+00:00",
+    "closed_at": null,
+    "reconcile_count": 5,
+    "completed": [
+      {
+        "id": "ofa_a80af118fc4b4134a43120a2f59b1dc3",
+        "action_type": "revoke_app_access",
+        "account_id": null,
+        "target_ref": "ops-manager:person:per_c38fc433e2224e87b30e12901b848251",
+        "description": "Revoke this application's API tokens and dashboard sessions for the person",
+        "owner": null,
+        "status": "completed",
+        "verification": "integration_verified",
+        "evidence_ref": "ops-manager:api_credentials revoked=1 active_remaining=0",
+        "blocker_code": null,
+        "blocker_detail": null,
+        "task": null,
+        "detail": {
+          "revoked_count": 1
+        },
+        "completed_at": "2026-10-16T07:46:58+00:00"
+      },
+      {
+        "id": "ofa_6349d539e9ca43c0840f3453f9166b1a",
+        "action_type": "identify_roles",
+        "account_id": null,
+        "target_ref": "person:per_c38fc433e2224e87b30e12901b848251",
+        "description": "Identify every registered role and permission the person holds",
+        "owner": null,
+        "status": "completed",
+        "verification": "human_confirmed",
+        "evidence_ref": "register:account_assignments",
+        "blocker_code": null,
+        "blocker_detail": null,
+        "task": null,
+        "detail": {
+          "roles": [
+            {
+              "assignment_id": "asg_39ec14a3b2ad4dd3b6a8375116030be2",
+              "account_id": "acc_d24c3d54a0ef4488a8064ee13004b8e9",
+              "brand": "Lumen Lab Test Brand (SYNTHETIC)",
+              "platform": "meta_business",
+              "role": "temporary_test_role",
+              "status": "active",
+              "temporary_test_role": true,
+              "register_verification": "human_confirmed"
+            }
+          ],
+          "note": "From the human-confirmed register; platform-side access is re-checked in verify_access_state"
+        },
+        "completed_at": "2026-10-16T07:46:58+00:00"
+      },
+      {
+        "id": "ofa_4051c7cea9054c02b65fc1c3db564d1d",
+        "action_type": "remove_account_role",
+        "account_id": "acc_d24c3d54a0ef4488a8064ee13004b8e9",
+        "target_ref": "assignment:asg_39ec14a3b2ad4dd3b6a8375116030be2",
+        "description": "Remove Jordan Patel (SYNTHETIC departing tester)'s temporary_test_role on meta_business for Lumen Lab Test Brand (SYNTHETIC)",
+        "owner": {
+          "id": "per_04a066bff951469c9a7f690d0a0d79ba",
+          "name": "Sam Rivera (SYNTHETIC account owner)",
+          "status": "active"
+        },
+        "status": "completed",
+        "verification": "human_confirmed",
+        "evidence_ref": "People list no longer shows the departing tester [SYNTHETIC]",
+        "blocker_code": null,
+        "blocker_detail": null,
+        "task": {
+          "id": "tsk_da1b3c6ab5934c77ae9d56a7a7c3dbc4",
+          "status": "completed",
+          "due_at": "2026-10-17T07:46:58+00:00"
+        },
+        "detail": {},
+        "completed_at": "2026-10-16T09:46:58+00:00"
+      },
+      {
+        "id": "ofa_d7881df5f67a4f03bfc8f7cd1ff00535",
+        "action_type": "identify_credentials",
+        "account_id": null,
+        "target_ref": "person:per_c38fc433e2224e87b30e12901b848251",
+        "description": "Identify every vault entry (credential) the person could access",
+        "owner": null,
+        "status": "completed",
+        "verification": "human_confirmed",
+        "evidence_ref": "register:credential_access",
+        "blocker_code": null,
+        "blocker_detail": null,
+        "task": null,
+        "detail": {
+          "credentials": [
+            {
+              "vault_ref": "devvault://instagram/lumen-lab/backup-codes",
+              "kind": "backup_codes",
+              "account_id": "acc_d24c3d54a0ef4488a8064ee13004b8e9"
+            },
+            {
+              "vault_ref": "devvault://proxies/approved-proxy-a",
+              "kind": "proxy_credential",
+              "account_id": null
+            }
+          ]
+        },
+        "completed_at": "2026-10-16T07:46:58+00:00"
+      },
+      {
+        "id": "ofa_a6bc51e31c2945cbb6a544679b8dacc8",
+        "action_type": "remove_vault_access",
+        "account_id": "acc_d24c3d54a0ef4488a8064ee13004b8e9",
+        "target_ref": "vault-access:cra_adec0308561e4545ad2712851f864ae1",
+        "description": "Remove Jordan Patel (SYNTHETIC departing tester)'s access to vault entry devvault://instagram/lumen-lab/backup-codes",
+        "owner": {
+          "id": "per_93e9fdd2e4584489a4744cca54628554",
+          "name": "Morgan Lee (SYNTHETIC security lead)",
+          "status": "active"
+        },
+        "status": "completed",
+        "verification": "human_confirmed",
+        "evidence_ref": "removed from vault group instagram-lumen-codes [SYNTHETIC]",
+        "blocker_code": null,
+        "blocker_detail": null,
+        "task": {
+          "id": "tsk_5eb52fe8948a4a959fae4eb1951b9626",
+          "status": "completed",
+          "due_at": "2026-10-17T07:46:58+00:00"
+        },
+        "detail": {
+          "vault_ref": "devvault://instagram/lumen-lab/backup-codes",
+          "credential_kind": "backup_codes"
+        },
+        "completed_at": "2026-10-16T09:46:58+00:00"
+      },
+      {
+        "id": "ofa_8d1bc7d44e0b4300b7108c73b0f2b10b",
+        "action_type": "replace_backup_codes",
+        "account_id": "acc_d24c3d54a0ef4488a8064ee13004b8e9",
+        "target_ref": "credential:devvault://instagram/lumen-lab/backup-codes",
+        "description": "Replace possibly exposed backup codes (Lumen Lab Test Brand (SYNTHETIC))",
+        "owner": {
+          "id": "per_04a066bff951469c9a7f690d0a0d79ba",
+          "name": "Sam Rivera (SYNTHETIC account owner)",
+          "status": "active"
+        },
+        "status": "completed",
+        "verification": "integration_verified",
+        "evidence_ref": "vault-metadata:devvault://instagram/lumen-lab/backup-codes v1->v2; new backup codes generated; old set invalidated [SYNTHETIC]",
+        "blocker_code": null,
+        "blocker_detail": null,
+        "task": {
+          "id": "tsk_060c5cbf8e67437e9d53fca4522672b6",
+          "status": "completed",
+          "due_at": "2026-10-17T07:46:58+00:00"
+        },
+        "detail": {
+          "vault_ref": "devvault://instagram/lumen-lab/backup-codes",
+          "baseline_version": 1,
+          "vault_metadata_supported": true,
+          "new_version": 2
+        },
+        "completed_at": "2026-10-16T09:46:58+00:00"
+      }
+    ],
+    "pending": [
+      {
+        "id": "ofa_ea2d1f37d4e84625bf308f4b39bfbef2",
+        "action_type": "remove_vault_access",
+        "account_id": null,
+        "target_ref": "vault-access:cra_ad040e9eda64445d9afd6a73f499d1cf",
+        "description": "Remove Jordan Patel (SYNTHETIC departing tester)'s access to vault entry devvault://proxies/approved-proxy-a",
+        "owner": {
+          "id": "per_93e9fdd2e4584489a4744cca54628554",
+          "name": "Morgan Lee (SYNTHETIC security lead)",
+          "status": "active"
+        },
+        "status": "pending",
+        "verification": "unverified",
+        "evidence_ref": null,
+        "blocker_code": null,
+        "blocker_detail": null,
+        "task": {
+          "id": "tsk_efb66ae0fd684c98b010e8fbbb62d720",
+          "status": "pending",
+          "due_at": "2026-10-17T07:46:58+00:00"
+        },
+        "detail": {
+          "vault_ref": "devvault://proxies/approved-proxy-a",
+          "credential_kind": "proxy_credential"
+        },
+        "completed_at": null
+      },
+      {
+        "id": "ofa_370a900646ed42b78fb1ec166e970cd8",
+        "action_type": "verify_access_state",
+        "account_id": null,
+        "target_ref": "person:per_c38fc433e2224e87b30e12901b848251",
+        "description": "Verify on Meta Business Suite, Instagram and the vault that no access remains",
+        "owner": null,
+        "status": "pending",
+        "verification": "unverified",
+        "evidence_ref": null,
+        "blocker_code": null,
+        "blocker_detail": null,
+        "task": null,
+        "detail": {
+          "waiting_on": [
+            "ofa_ea2d1f37d4e84625bf308f4b39bfbef2",
+            "ofa_1e28dd7102ca43158804b1605b32bdf8"
+          ]
+        },
+        "completed_at": null
+      },
+      {
+        "id": "ofa_209f6311877d4ab58c12dd00d61b5e5d",
+        "action_type": "update_register",
+        "account_id": null,
+        "target_ref": "person:per_c38fc433e2224e87b30e12901b848251",
+        "description": "Mark the person offboarded in the personnel records and the account register",
+        "owner": null,
+        "status": "pending",
+        "verification": "unverified",
+        "evidence_ref": null,
+        "blocker_code": null,
+        "blocker_detail": null,
+        "task": null,
+        "detail": {},
+        "completed_at": null
+      }
+    ],
+    "blocked": [
+      {
+        "id": "ofa_1e28dd7102ca43158804b1605b32bdf8",
+        "action_type": "rotate_credential",
+        "account_id": null,
+        "target_ref": "credential:devvault://proxies/approved-proxy-a",
+        "description": "Rotate proxy_credential the person could access (shared infrastructure)",
+        "owner": {
+          "id": "per_93e9fdd2e4584489a4744cca54628554",
+          "name": "Morgan Lee (SYNTHETIC security lead)",
+          "status": "active"
+        },
+        "status": "blocked",
+        "verification": "unverified",
+        "evidence_ref": null,
+        "blocker_code": "NO_PROXY_PROVIDER_ADMIN",
+        "blocker_detail": "Nobody holds the proxy_provider_admin responsibility and this system cannot rotate provider credentials; assign a provider administrator.",
+        "task": null,
+        "detail": {
+          "vault_ref": "devvault://proxies/approved-proxy-a",
+          "baseline_version": 1,
+          "vault_metadata_supported": true
+        },
+        "completed_at": null
+      }
+    ],
+    "cancelled": []
+  },
+  "outstanding_risks": [
+    "Jordan Patel (SYNTHETIC departing tester) may still be able to read vault entry devvault://proxies/approved-proxy-a [pending]",
+    "Credential devvault://proxies/approved-proxy-a may still be known to Jordan Patel (SYNTHETIC departing tester) until rotated [blocked]",
+    "No independent verification of the final access state yet [pending]"
+  ]
+}

@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% from "_macros.html" import pill, vlabel, sev, due %}
+{% block title %}{{ account.brand_name }}{% endblock %}
+{% block content %}
+{% set done = account.steps|selectattr('state', 'equalto', 'completed')|list|length %}
+<div class="breadcrumb"><a href="/dashboard/accounts">Accounts</a> / {{ account.brand_name }}</div>
+<div class="page-head">
+  <div>
+    <h1>{{ account.brand_name }} {% if account.handles.selected %}<span class="handle">@{{ account.handles.selected }}</span>{% endif %}
+      {% if account.is_synthetic %}<span class="tag synthetic">synthetic</span>{% endif %}</h1>
+    <div class="sub">Owner {{ account.owner.name if account.owner else '-' }} · created {{ account.created_at|dt }} · last verified {{ account.last_verified_at|rel(now_dt) }} {{ vlabel(account.verification_source) }}</div>
+  </div>
+  <div class="actions">{{ pill(account.provisioning_status) }}</div>
+</div>
+{% if account.blocker %}<div class="banner error"><strong>Blocked: {{ account.blocker.code }}</strong> {{ account.blocker.detail }}</div>{% endif %}
+
+<div class="grid main-side">
+  <div>
+    <section class="card">
+      <div class="card-head"><h2>Provisioning</h2><span class="muted small">{{ done }} of {{ account.steps|length }} steps complete</span></div>
+      <div class="progress-row"><progress value="{{ done }}" max="{{ account.steps|length }}"></progress></div>
+      {% set ns = namespace(current=false) %}
+      <ol class="stepper">
+        {% for s in account.steps %}
+          {% set is_current = s.state != 'completed' and not ns.current %}
+          {% if is_current %}{% set ns.current = true %}{% endif %}
+          <li class="{{ s.state }}{{ ' current' if is_current else '' }}">
+            <span class="mark">{% if s.state == 'completed' %}&#10003;{% elif s.state == 'blocked' %}!{% else %}{{ loop.index }}{% endif %}</span>
+            <div>
+              <div class="name">{{ s.step|human|capitalize }}</div>
+              <div class="meta">{% if s.state == 'completed' %}{{ s.evidence_ref or 'no evidence recorded' }} · {{ s.completed_at|dt }}{% elif is_current %}waiting on the open task{% else %}not started{% endif %}</div>
+            </div>
+            <div>{% if s.state == 'completed' %}{{ vlabel(s.verification) }}{% else %}{{ pill(s.state) }}{% endif %}</div>
+          </li>
+        {% endfor %}
+      </ol>
+    </section>
+
+    <div class="grid two">
+      <section class="card">
+        <h2>Contacts and recovery</h2>
+        <dl class="kv">
+          <dt>Company email</dt><dd>{{ account.company_contacts.email_assignment_ref or '-' }} <span class="muted">{{ account.company_contacts.email_hint or '' }}</span> {{ pill(account.company_contacts.email_control) }}</dd>
+          <dt>Company phone</dt><dd>{{ account.company_contacts.phone_assignment_ref or '-' }} <span class="muted">{{ account.company_contacts.phone_hint or '' }}</span> {{ pill(account.company_contacts.phone_control) }}</dd>
+          <dt>Recovery email</dt><dd>{{ pill(account.recovery.email_control) }} {{ vlabel(account.recovery.email_verification) }}</dd>
+          <dt>Recovery phone</dt><dd>{{ pill(account.recovery.phone_control) }} {{ vlabel(account.recovery.phone_verification) }}</dd>
+        </dl>
+      </section>
+      <section class="card">
+        <h2>Security and vault</h2>
+        <dl class="kv">
+          <dt>Two-factor</dt><dd>{{ pill(account.two_factor.status) }} {{ account.two_factor.method|human }} {{ vlabel(account.two_factor.verification) }}</dd>
+          <dt>Backup codes</dt><dd>{{ pill(account.backup_codes.status) }} {{ vlabel(account.backup_codes.verification) }}<div class="mono muted">{{ account.backup_codes.vault_ref or '-' }}</div></dd>
+          <dt>Password</dt><dd>{{ vlabel(account.vault_refs.password_ref_verification) }}<div class="mono muted">{{ account.vault_refs.password_vault_ref or '-' }}</div></dd>
+          {% for k, v in account.vault_refs.other.items() %}<dt>{{ k|human }}</dt><dd class="mono muted">{{ v }}</dd>{% endfor %}
+        </dl>
+      </section>
+      <section class="card">
+        <h2>Approved profile</h2>
+        <dl class="kv">
+          <dt>Name</dt><dd>{{ account.profile.profile_name or '-' }}</dd>
+          <dt>Bio</dt><dd>{{ account.profile.bio or '-' }} <span class="muted small">({{ account.profile.bio_char_count }}/150)</span></dd>
+          <dt>Link</dt><dd>{{ account.profile.profile_link or '-' }}</dd>
+          <dt>Category</dt><dd>{{ account.profile.category or '-' }}</dd>
+          <dt>Image</dt><dd class="mono muted">{{ account.profile.profile_image_ref or '-' }}</dd>
+        </dl>
+      </section>
+      <section class="card">
+        <h2>Business and Meta</h2>
+        <dl class="kv">
+          <dt>Account type</dt><dd>{{ pill(account.business_account_status) }}</dd>
+          <dt>Meta business</dt><dd>{{ pill(account.meta.link_status) }} {{ vlabel(account.meta.verification) }}<div class="mono muted">{{ account.meta.business_ref or '-' }}</div></dd>
+          <dt>Handle suggestions</dt><dd class="small">{{ account.handles.suggested|join(', ') }}<div class="muted">{{ account.handles.suggestion_note }}</div></dd>
+        </dl>
+      </section>
+    </div>
+
+    <section class="card">
+      <h2>People and roles</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Person</th><th>Role</th><th>Platform</th><th>Status</th><th>Verification</th><th>Last verified</th></tr></thead>
+        <tbody>
+        {% for r in account.people_and_roles %}
+          <tr><td class="row-title">{{ r.person.name }}{% if r.temporary_test_role %} <span class="tag">temporary test role</span>{% endif %}</td>
+            <td>{{ r.role|human }}<div class="row-sub">{{ r.role_description }}</div></td><td>{{ r.platform|human }}</td>
+            <td>{{ pill(r.status) }}</td><td>{{ vlabel(r.verification) }}</td><td class="nowrap">{{ r.last_verified_at|rel(now_dt) }}</td></tr>
+        {% else %}<tr><td colspan="6" class="empty">No people assigned yet.</td></tr>{% endfor %}
+        </tbody>
+      </table></div>
+    </section>
+  </div>
+
+  <div>
+    <section class="card">
+      <h2>Open tasks</h2>
+      <ul class="attention">
+        {% for t in account.open_tasks %}
+          <li>{{ pill(t.status) }}<div><a class="what" href="/dashboard/tasks/{{ t.id }}">{{ t.title }}</a>
+            <div class="why">{{ t.owner.name if t.owner else '-' }} · due {{ due(t.due_at, now_dt, t.is_overdue) }}</div></div></li>
+        {% else %}<li class="all-clear">No open tasks.</li>{% endfor %}
+      </ul>
+    </section>
+    <section class="card">
+      <h2>Open findings</h2>
+      <ul class="attention">
+        {% for f in account.open_findings %}
+          <li>{{ sev(f.severity) }}<div><a class="what" href="/dashboard/audit">{{ f.check_name|human }}</a><div class="why">{{ f.description }}</div>{{ vlabel(f.verification) }}</div></li>
+        {% else %}<li class="all-clear">No open findings.</li>{% endfor %}
+      </ul>
+    </section>
+    {% if account.provisioning_gaps %}
+    <section class="card">
+      <h2>Before "provisioned"</h2>
+      <ul class="small">{% for g in account.provisioning_gaps %}<li>{{ g }}</li>{% endfor %}</ul>
+    </section>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

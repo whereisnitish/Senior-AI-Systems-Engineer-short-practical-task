@@ -1,0 +1,323 @@
+{
+  "report_meta": {
+    "title": "Account register",
+    "generated_at": "2026-10-17T09:57:55.334691+00:00",
+    "generator": "Instagram Operations Manager",
+    "data_classification": "CANDIDATE_PROVIDED_TEST_ENVIRONMENT",
+    "integrations": {
+      "vault": {
+        "backend": "hashicorp_kv2",
+        "production_grade": true
+      },
+      "meta": {
+        "mode": "disabled",
+        "configured": false
+      },
+      "notifications": {
+        "backend": "smtp",
+        "configured": true
+      }
+    },
+    "verification_labels": {
+      "integration_verified": "Read directly from the authoritative system (configured integration, or this application's own records where it is the system of record).",
+      "human_confirmed": "Attested by a named, authorised human with an evidence reference; not machine-verified.",
+      "unverified": "No adequate evidence either way. Missing evidence is not proof of failure."
+    },
+    "notes": [
+      "The company test environment was not provided. The candidate created throwaway substitute resources (test brand, email, Instagram account, Meta business portfolio); they are not company-authorised resources.",
+      "Vault: a candidate-run HashiCorp Vault (not the company vault), KV v2. Presence and versions of vault:// references are machine-verified; the application token may not read Instagram secret values. References to other password managers stay human-confirmed.",
+      "Meta: integration not configured - business association is human-confirmed."
+    ]
+  },
+  "accounts": [
+    {
+      "id": "acc_b1236a334e724a3eb461ff3480e92c84",
+      "brand_name": "demo_workaccount",
+      "is_synthetic": false,
+      "environment": "candidate_provided_test_environment",
+      "provisioning_status": "awaiting_signup",
+      "provisioned_at": null,
+      "owner": {
+        "id": "per_88521111a9f0477aafcf71314ff1ad78",
+        "name": "Candidate (account owner)",
+        "status": "active"
+      },
+      "handles": {
+        "suggested": [
+          "demoworkaccount",
+          "demo_workaccount",
+          "demo.workaccount",
+          "demoworkaccount_work",
+          "demoworkaccountofficial",
+          "demoworkaccount_hq",
+          "thedemoworkaccount",
+          "demoworkaccount.team"
+        ],
+        "suggestion_note": "format-checked only; availability is checked by a human in the official Instagram interface",
+        "selected": "demo_workaccount",
+        "status": "available_human_confirmed"
+      },
+      "company_contacts": {
+        "email_assignment_ref": "test-123",
+        "email_hint": "w***@gmail.com",
+        "email_domain": "gmail.com",
+        "email_control": "company_controlled",
+        "phone_assignment_ref": "nothing",
+        "phone_hint": "+**********27",
+        "phone_control": "company_controlled"
+      },
+      "recovery": {
+        "email_control": "unknown",
+        "email_verification": "unverified",
+        "phone_control": "unknown",
+        "phone_verification": "unverified",
+        "last_verified_at": null
+      },
+      "two_factor": {
+        "status": "unknown",
+        "method": "unknown",
+        "verification": "unverified"
+      },
+      "backup_codes": {
+        "vault_ref": null,
+        "status": "unknown",
+        "verification": "unverified"
+      },
+      "vault_refs": {
+        "password_vault_ref": null,
+        "password_ref_verification": "unverified",
+        "other": {}
+      },
+      "profile": {
+        "profile_name": "demo work",
+        "bio": "Throwaway test brand for an operations workflow demo. Not a real business.",
+        "bio_char_count": 74,
+        "bio_max_chars": 150,
+        "profile_link": "https://github.com/whereisnitish",
+        "category": "Product/service",
+        "profile_image_ref": "brandkit://demo_workaccount/profile-picture"
+      },
+      "business_account_status": "not_started",
+      "meta": {
+        "link_status": "not_started",
+        "business_ref": null,
+        "verification": "unverified"
+      },
+      "steps": [
+        {
+          "step": "handle_selected",
+          "state": "completed",
+          "verification": "human_confirmed",
+          "evidence_ref": "I have checked on insta",
+          "task_id": "tsk_989c69759f93420992409f921cb05323",
+          "completed_at": "2026-10-17T09:47:11.097200+00:00"
+        },
+        {
+          "step": "company_email",
+          "state": "completed",
+          "verification": "human_confirmed",
+          "evidence_ref": "checked on facebook developer section",
+          "task_id": "tsk_a3d45ab55cbf415bab207d218c1d0fd7",
+          "completed_at": "2026-10-17T09:48:00.398127+00:00"
+        },
+        {
+          "step": "company_phone",
+          "state": "completed",
+          "verification": "human_confirmed",
+          "evidence_ref": "Testing",
+          "task_id": "tsk_998d6d69ee4946569660081c7c902033",
+          "completed_at": "2026-10-17T09:49:24.564763+00:00"
+        },
+        {
+          "step": "signup",
+          "state": "pending",
+          "verification": "unverified",
+          "evidence_ref": null,
+          "task_id": null,
+          "completed_at": null
+        },
+        {
+          "step": "platform_verification",
+          "state": "pending",
+          "verification": "unverified",
+          "evidence_ref": null,
+          "task_id": null,
+          "completed_at": null
+        },
+        {
+          "step": "two_factor",
+          "state": "pending",
+          "verification": "unverified",
+          "evidence_ref": null,
+          "task_id": null,
+          "completed_at": null
+        },
+        {
+          "step": "profile",
+          "state": "pending",
+          "verification": "unverified",
+          "evidence_ref": null,
+          "task_id": null,
+          "completed_at": null
+        },
+        {
+          "step": "business_conversion",
+          "state": "pending",
+          "verification": "unverified",
+          "evidence_ref": null,
+          "task_id": null,
+          "completed_at": null
+        },
+        {
+          "step": "meta_link",
+          "state": "pending",
+          "verification": "unverified",
+          "evidence_ref": null,
+          "task_id": null,
+          "completed_at": null
+        },
+        {
+          "step": "roles_assigned",
+          "state": "pending",
+          "verification": "unverified",
+          "evidence_ref": null,
+          "task_id": null,
+          "completed_at": null
+        }
+      ],
+      "people_and_roles": [
+        {
+          "assignment_id": "asg_5479a2c809774d9a96a21953cedc780a",
+          "person": {
+            "id": "per_88521111a9f0477aafcf71314ff1ad78",
+            "name": "Candidate (account owner)",
+            "status": "active"
+          },
+          "platform": "meta_business",
+          "role": "business_admin",
+          "role_description": "Full control of the test business portfolio and the Instagram account. Limit to the account owner and one backup admin.",
+          "approved": true,
+          "status": "requested",
+          "temporary_test_role": false,
+          "verification": "unverified",
+          "evidence_ref": null,
+          "last_verified_at": null
+        }
+      ],
+      "blocker": null,
+      "provisioning_gaps": [
+        "step 'signup' is pending",
+        "step 'platform_verification' is pending",
+        "step 'two_factor' is pending",
+        "step 'profile' is pending",
+        "step 'business_conversion' is pending",
+        "step 'meta_link' is pending",
+        "step 'roles_assigned' is pending",
+        "no password vault reference recorded",
+        "two-factor authentication not confirmed enabled",
+        "backup codes status is unknown",
+        "no active business_admin assignment"
+      ],
+      "open_tasks": [
+        {
+          "id": "tsk_b2d2322c208b45a0aa323cade34cdb52",
+          "task_type": "manual",
+          "origin": "manual",
+          "account_id": "acc_b1236a334e724a3eb461ff3480e92c84",
+          "title": "Live offboarding test with the designated temporary test role",
+          "owner": {
+            "id": "per_88521111a9f0477aafcf71314ff1ad78",
+            "name": "Candidate (account owner)",
+            "status": "active"
+          },
+          "supervisor": null,
+          "status": "blocked",
+          "priority": "high",
+          "due_at": "2026-10-19T05:47:38.133388+00:00",
+          "is_overdue": false,
+          "created_at": "2026-10-17T05:47:38.137375+00:00",
+          "updated_at": "2026-10-17T05:47:38.398440+00:00",
+          "attempt_count": 1,
+          "reminder_count": 0,
+          "last_reminder_at": null,
+          "escalation_count": 0,
+          "escalated_at": null,
+          "completed_at": null,
+          "completed_by_id": null,
+          "completion_evidence_ref": null,
+          "verification_source": "unverified",
+          "blocker_detail": "No second real person is available to hold the temporary test role (company test environment not provided). Offboarding is demonstrated with synthetic data in reports/synthetic_demo/offboarding.",
+          "error_detail": null,
+          "idempotency_key": "manual:live-offboarding-test"
+        },
+        {
+          "id": "tsk_1835fe6fc095431892915ec8dd0612f1",
+          "task_type": "account_signup",
+          "origin": "provisioning",
+          "account_id": "acc_b1236a334e724a3eb461ff3480e92c84",
+          "title": "Sign up @demo_workaccount for demo_workaccount on Instagram (attempt 1)",
+          "owner": {
+            "id": "per_88521111a9f0477aafcf71314ff1ad78",
+            "name": "Candidate (account owner)",
+            "status": "active"
+          },
+          "supervisor": null,
+          "status": "pending",
+          "priority": "high",
+          "due_at": "2026-10-19T09:49:24.581721+00:00",
+          "is_overdue": false,
+          "created_at": "2026-10-17T09:49:24.581721+00:00",
+          "updated_at": "2026-10-17T09:49:24.581721+00:00",
+          "attempt_count": 1,
+          "reminder_count": 0,
+          "last_reminder_at": null,
+          "escalation_count": 0,
+          "escalated_at": null,
+          "completed_at": null,
+          "completed_by_id": null,
+          "completion_evidence_ref": null,
+          "verification_source": "unverified",
+          "blocker_detail": null,
+          "error_detail": null,
+          "idempotency_key": "acc_b1236a334e724a3eb461ff3480e92c84:account_signup:a1"
+        }
+      ],
+      "open_findings": [
+        {
+          "id": "fnd_69aefbf9fc12423c9276bbdd36ce636e",
+          "account_id": "acc_b1236a334e724a3eb461ff3480e92c84",
+          "check_name": "provisioning_tasks_complete",
+          "fingerprint": "provisioning_tasks_complete",
+          "severity": "medium",
+          "description": "Provisioning incomplete (awaiting_signup); pending steps: signup, platform_verification, two_factor, profile, business_conversion, meta_link, roles_assigned",
+          "verification": "integration_verified",
+          "evidence_ref": "system-of-record:account_steps",
+          "status": "open",
+          "first_detected_at": "2026-10-17T05:50:08.240060+00:00",
+          "last_detected_at": "2026-10-17T09:50:58.244651+00:00",
+          "occurrence_count": 8,
+          "resolved_at": null,
+          "resolution_note": null,
+          "remediation_task": {
+            "id": "tsk_1835fe6fc095431892915ec8dd0612f1",
+            "title": "Sign up @demo_workaccount for demo_workaccount on Instagram (attempt 1)",
+            "status": "pending",
+            "owner": {
+              "id": "per_88521111a9f0477aafcf71314ff1ad78",
+              "name": "Candidate (account owner)",
+              "status": "active"
+            },
+            "due_at": "2026-10-19T09:49:24.581721+00:00",
+            "origin": "provisioning"
+          },
+          "remediation_blocker": null
+        }
+      ],
+      "last_verified_at": "2026-10-17T09:49:24.564763+00:00",
+      "verification_source": "human_confirmed",
+      "evidence_ref": "Testing",
+      "created_at": "2026-10-17T05:18:42.971256+00:00",
+      "updated_at": "2026-10-17T09:49:24.593688+00:00"
+    }
+  ]
+}

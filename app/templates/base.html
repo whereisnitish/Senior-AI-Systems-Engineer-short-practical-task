@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Overview{% endblock %} · Instagram Ops Manager</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <a class="logo" href="/dashboard"><span class="logo-mark">IO</span><span>Instagram Ops</span></a>
+    <nav class="nav">
+      {% for key, label, href, count, alert in nav %}
+      <a href="{{ href }}" class="{{ 'active' if active == key else '' }}">{{ label }}{% if count %}<span class="count{{ ' alert' if alert else '' }}">{{ count }}</span>{% endif %}</a>
+      {% endfor %}
+    </nav>
+    <div class="sidebar-foot">
+      <span>Environment: {{ app_env }}</span>
+      <span>Scheduler: {{ ('running' if scheduler.running else 'stopped') if scheduler else 'disabled' }}</span>
+      <span>{{ now_dt|dt }}</span>
+    </div>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="user">
+        <span class="avatar">{{ initials }}</span>
+        <span>{{ actor.display_name }}</span>
+        <span class="pill plain">{{ actor.role }}</span>
+        <form method="post" action="/logout" class="inline">
+          <input type="hidden" name="csrf_token" value="{{ csrf }}">
+          <button type="submit" class="link">Sign out</button>
+        </form>
+      </div>
+    </header>
+    <div class="content">
+      {% if synthetic_data %}<div class="banner synthetic"><strong>SYNTHETIC DEMO DATA present.</strong> Synthetic records are labelled and are not live-account verification.</div>{% endif %}
+      {% if environment_label == 'candidate_provided_test_environment' %}<div class="banner warn"><strong>Candidate-provided test environment.</strong> The company test environment was not provided; the test brand, email, Instagram account and Meta portfolio are throwaway substitutes.</div>{% endif %}
+      {% if notice %}<div class="banner notice">{{ notice }}</div>{% endif %}
+      {% if page_error %}<div class="banner error">{{ page_error }}</div>{% endif %}
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</div>
+</body>
+</html>

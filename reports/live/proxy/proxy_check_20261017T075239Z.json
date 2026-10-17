@@ -1,0 +1,104 @@
+{
+  "report_meta": {
+    "title": "Live proxy check",
+    "generated_at": "2026-10-17T07:52:39.817450+00:00",
+    "generator": "Instagram Operations Manager",
+    "data_classification": "CANDIDATE_PROVIDED_TEST_ENVIRONMENT",
+    "integrations": {
+      "vault": {
+        "backend": "reference_only",
+        "production_grade": true
+      },
+      "meta": {
+        "mode": "disabled",
+        "configured": false
+      },
+      "notifications": {
+        "backend": "none",
+        "configured": false
+      }
+    },
+    "verification_labels": {
+      "integration_verified": "Read directly from the authoritative system (configured integration, or this application's own records where it is the system of record).",
+      "human_confirmed": "Attested by a named, authorised human with an evidence reference; not machine-verified.",
+      "unverified": "No adequate evidence either way. Missing evidence is not proof of failure."
+    },
+    "notes": [
+      "The company test environment was not provided. The candidate created throwaway substitute resources (test brand, email, Instagram account, Meta business portfolio); they are not company-authorised resources.",
+      "Vault: reference-only mode - vault presence is human-confirmed, not machine-verified.",
+      "Meta: integration not configured - business association is human-confirmed.",
+      "Notifications: no provider configured - reminders/escalations were queued and shown on the dashboard but NOT delivered."
+    ],
+    "proxy_source": "Operator-run local proxies (open-source proxy.py on 127.0.0.1, controlled by the candidate). No company-approved proxies were provided; public/free proxy lists were deliberately NOT used.",
+    "neutral_endpoint": "https://example.com/"
+  },
+  "steps": [
+    {
+      "step": "request_via_session",
+      "result": {
+        "session_id": "pxs_31cb460feaee4c39ad4d457ce731d709",
+        "proxy_id": "operator-local-b",
+        "outcome": "no_healthy_proxy",
+        "decision": "No approved proxy passed a health check; the session was not moved. Human attention required.",
+        "candidates_checked": []
+      }
+    },
+    {
+      "step": "health_check_all",
+      "result": {
+        "url": "https://example.com/",
+        "diagnosis": "endpoint_reachable",
+        "results": [
+          {
+            "proxy_id": "operator-local-a",
+            "url": "https://example.com/",
+            "ok": true,
+            "failure_kind": "none",
+            "classification": "ok",
+            "attempt_count": 2,
+            "attempts": [
+              {
+                "attempt": 1,
+                "kind": "proxy_connect_timeout",
+                "status_code": null,
+                "latency_ms": 7145.1,
+                "error": "ConnectTimeout: _ssl.c:989: The handshake operation timed out",
+                "backoff_seconds": 0.349
+              },
+              {
+                "attempt": 2,
+                "kind": "none",
+                "status_code": 200,
+                "latency_ms": 1776.2,
+                "error": null,
+                "backoff_seconds": null
+              }
+            ],
+            "attribution": "ok",
+            "health_after": "healthy"
+          },
+          {
+            "proxy_id": "operator-local-b",
+            "url": "https://example.com/",
+            "ok": true,
+            "failure_kind": "none",
+            "classification": "ok",
+            "attempt_count": 1,
+            "attempts": [
+              {
+                "attempt": 1,
+                "kind": "none",
+                "status_code": 200,
+                "latency_ms": 354.9,
+                "error": null,
+                "backoff_seconds": null
+              }
+            ],
+            "attribution": "ok",
+            "health_after": "healthy"
+          }
+        ]
+      }
+    }
+  ]
+}
