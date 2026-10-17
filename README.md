@@ -191,11 +191,7 @@ coordinates and records that work.
 7. **Audit:** `python -m scripts.run_audit` (or the dashboard button).
 8. **Offboard the tester:** `POST /api/v1/offboarding`, then work the generated tasks.
 9. **Export** with `python -m scripts.export_reports` (written to `reports/live/`).
-10. **Package** with `python -m scripts.package_submission` (writes `../instagram-ops-submission.zip`). This
-    folder may not be a git repository, so `.gitignore` protects nothing when it is zipped by hand. The script
-    leaves out `.env*`, `data/`, `logs/`, token files and databases, then scans every included file for the
-    secrets present on this machine (each `APP_SECRET_KEY`, every operator token) and for token formats. It
-    writes nothing if anything matches.
+
 
 Anything you cannot complete (missing access, a checkpoint, an unavailable integration) should be recorded
 as a **blocked task** or an account blocker (`POST /api/v1/accounts/{id}/blocker`). The register and reports
